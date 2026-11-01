@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block title %}SOC Dashboard{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold text-white mb-0">Security Operations Center</h3>
+        <p class="text-muted small mb-0">Real-time API telemetry, machine learning threat classification, and active mitigation</p>
+    </div>
+    <div class="d-flex align-items-center gap-2 mt-2 mt-sm-0">
+        <button id="refreshDashboardBtn" class="btn btn-sm btn-cyber-outline">
+            <i class="bi bi-arrow-clockwise"></i> Refresh Telemetry
+        </button>
+        <a href="{{ url_for('simulation') }}" class="btn btn-sm btn-cyber">
+            <i class="bi bi-lightning-charge-fill"></i> Launch Simulation Lab
+        </a>
+    </div>
+</div>
+
+<!-- KPI Summary Metric Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="kpi-card kpi-cyan">
+            <div class="kpi-header">
+                <span>Total Monitored</span>
+                <div class="kpi-icon-wrap kpi-icon-cyan">
+                    <i class="bi bi-activity"></i>
+                </div>
+            </div>
+            <div class="kpi-value text-cyan" id="kpiTotalRequests">0</div>
+            <div class="kpi-subtext">All API calls processed</div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+        <div class="kpi-card kpi-green">
+            <div class="kpi-header">
+                <span>Safe Traffic</span>
+                <div class="kpi-icon-wrap kpi-icon-green">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+            </div>
+            <div class="kpi-value text-emerald" id="kpiSafeRequests">0</div>
+            <div class="kpi-subtext">Normal operational baseline</div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+        <div class="kpi-card kpi-amber">
+            <div class="kpi-header">
+                <span>Suspicious Events</span>
+                <div class="kpi-icon-wrap kpi-icon-amber">
+                    <i class="bi bi-exclamation-triangle"></i>
+                </div>
+            </div>
+            <div class="kpi-value text-amber" id="kpiSuspiciousRequests">0</div>
+            <div class="kpi-subtext">Flagged for SOC review</div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+        <div class="kpi-card kpi-red">
+            <div class="kpi-header">
+                <span>Blocked Threats</span>
+                <div class="kpi-icon-wrap kpi-icon-red">
+                    <i class="bi bi-shield-slash"></i>
+                </div>
+            </div>
+            <div class="kpi-value text-crimson" id="kpiBlockedRequests">0</div>
+            <div class="kpi-subtext">Mitigated / Dropped at WAF</div>
+        </div>
+    </div>
+</div>
+
+<!-- Threat Matrix & Charts Row -->
+<div class="row g-3 mb-4">
+    <!-- Traffic Activity Timeline Line Chart -->
+    <div class="col-lg-8">
+        <div class="soc-card h-100">
+            <div class="soc-card-header">
+                <div class="soc-card-title">
+                    <i class="bi bi-graph-up text-cyan"></i>
+                    <span>Real-Time Traffic Activity & Risk Score Timeline</span>
+                </div>
+                <div class="badge bg-dark border border-secondary text-cyan font-mono small">
+                    <i class="bi bi-broadcast me-1"></i> Live Stream
+                </div>
+            </div>
+            <div style="height: 300px; position: relative;">
+                <canvas id="trafficTimelineChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Threat Category Distribution Doughnut Chart -->
+    <div class="col-lg-4">
+        <div class="soc-card h-100">
+            <div class="soc-card-header">
+                <div class="soc-card-title">
+                    <i class="bi bi-pie-chart-fill text-amber"></i>
+                    <span>Threat Categories</span>
+                </div>
+                <div class="badge bg-dark border border-secondary text-muted font-mono small">
+                    Distribution
+                </div>
+            </div>
+            <div style="height: 240px; position: relative;">
+                <canvas id="threatCategoryChart"></canvas>
+            </div>
+            <div class="border-top border-secondary pt-2 mt-2 d-flex justify-content-between align-items-center small font-mono">
+                <span class="text-muted">Active Alerts: <strong class="text-white" id="kpiActiveAlerts">0</strong></span>
+                <span class="text-muted">Avg Latency: <strong class="text-amber" id="kpiAvgLatency">0 ms</strong></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Secondary Row: Active Incidents & Inbound Traffic -->
+<div class="row g-3">
+    <!-- Recent Critical Alerts -->
+    <div class="col-lg-6">
+        <div class="soc-card h-100">
+            <div class="soc-card-header">
+                <div class="soc-card-title">
+                    <i class="bi bi-shield-exclamation text-crimson"></i>
+                    <span>Recent Security Incidents & Threat Alerts</span>
+                </div>
+                <a href="{{ url_for('alerts') }}" class="btn btn-sm btn-cyber-outline py-0 px-2 small">
+                    View All <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+            <div class="table-soc-container">
+                <table class="table-soc">
+                    <thead>
+                        <tr>
+                            <th>Severity</th>
+                            <th>Incident Title</th>
+                            <th>Source IP</th>
+                            <th>Risk Score</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentAlertsTbody">
+                        <tr><td colspan="5" class="text-center text-muted py-3">Loading alert telemetry...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Monitored API Traffic -->
+    <div class="col-lg-6">
+        <div class="soc-card h-100">
+            <div class="soc-card-header">
+                <div class="soc-card-title">
+                    <i class="bi bi-hdd-network text-cyan"></i>
+                    <span>Live Inbound Request Stream</span>
+                </div>
+                <a href="{{ url_for('traffic') }}" class="btn btn-sm btn-cyber-outline py-0 px-2 small">
+                    Explore Traffic <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+            <div class="table-soc-container">
+                <table class="table-soc">
+                    <thead>
+                        <tr>
+                            <th>Method</th>
+                            <th>Endpoint</th>
+                            <th>IP</th>
+                            <th>Status</th>
+                            <th>AI Class</th>
+                            <th class="text-end">Risk</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentRequestsTbody">
+                        <tr><td colspan="6" class="text-center text-muted py-3">Loading live traffic packets...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        initDashboard();
+    });
+</script>
+{% endblock %}
+

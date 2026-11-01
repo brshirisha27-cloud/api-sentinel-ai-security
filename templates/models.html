@@ -1,0 +1,291 @@
+{% extends "base.html" %}
+
+{% block title %}AI/ML Model Intelligence{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold text-white mb-0">AI / Machine Learning Threat Intelligence</h3>
+        <p class="text-muted small mb-0">Performance diagnostics, classification metrics, confusion matrix, and feature weight importances</p>
+    </div>
+    <div class="d-flex align-items-center gap-2 mt-2 mt-sm-0">
+        <span class="badge bg-dark border border-secondary text-cyan font-mono py-2 px-3">
+            <i class="bi bi-cpu-fill me-1"></i> DUAL-MODEL ENSEMBLE ENGINE
+        </span>
+    </div>
+</div>
+
+<!-- Academic Disclaimer -->
+<div class="alert alert-dark border border-secondary text-light p-3 mb-4 rounded-3 d-flex align-items-center gap-3">
+    <div class="fs-2 text-cyan"><i class="bi bi-info-circle-fill"></i></div>
+    <div>
+        <div class="fw-bold text-white">Educational Synthetic Benchmark Validation</div>
+        <div class="small text-muted">
+            The machine learning models below are trained and validated on a held-out synthetic API traffic dataset designed for academic demonstration. 
+            All evaluation metrics (accuracy, precision, recall, F1, confusion matrix) are genuinely computed using Scikit-learn test evaluation.
+        </div>
+    </div>
+</div>
+
+<!-- ML Performance Metrics Row -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="kpi-card kpi-cyan">
+            <div class="kpi-header">
+                <span>Model Accuracy</span>
+                <div class="kpi-icon-wrap kpi-icon-cyan"><i class="bi bi-bullseye"></i></div>
+            </div>
+            <div class="kpi-value text-cyan" id="metricAccuracy">--%</div>
+            <div class="kpi-subtext">Held-out test split (20%)</div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+        <div class="kpi-card kpi-green">
+            <div class="kpi-header">
+                <span>Weighted Precision</span>
+                <div class="kpi-icon-wrap kpi-icon-green"><i class="bi bi-check2-circle"></i></div>
+            </div>
+            <div class="kpi-value text-emerald" id="metricPrecision">--%</div>
+            <div class="kpi-subtext">True positives / predicted</div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+        <div class="kpi-card kpi-amber">
+            <div class="kpi-header">
+                <span>Weighted Recall</span>
+                <div class="kpi-icon-wrap kpi-icon-amber"><i class="bi bi-binoculars-fill"></i></div>
+            </div>
+            <div class="kpi-value text-amber" id="metricRecall">--%</div>
+            <div class="kpi-subtext">Sensitivity across attack classes</div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+        <div class="kpi-card kpi-cyan">
+            <div class="kpi-header">
+                <span>F1-Score</span>
+                <div class="kpi-icon-wrap kpi-icon-cyan"><i class="bi bi-award-fill"></i></div>
+            </div>
+            <div class="kpi-value text-cyan" id="metricF1">--%</div>
+            <div class="kpi-subtext">Harmonic mean of precision & recall</div>
+        </div>
+    </div>
+</div>
+
+<!-- Architecture & Pipeline Overview Cards -->
+<div class="row g-3 mb-4">
+    <!-- Model 1: Random Forest -->
+    <div class="col-lg-6">
+        <div class="soc-card h-100">
+            <div class="soc-card-header">
+                <div class="soc-card-title text-cyan">
+                    <i class="bi bi-diagram-3-fill"></i>
+                    <span>Model 1: Random Forest Classifier</span>
+                </div>
+                <span class="badge bg-success font-mono">FITTED & ACTIVE</span>
+            </div>
+            <p class="small text-muted mb-3">
+                Supervised ensemble classifier trained on multivariate behavioral features to categorize API traffic into 
+                <strong class="text-white">Normal (0)</strong>, <strong class="text-warning">Suspicious (1)</strong>, and <strong class="text-danger">Potential Attack (2)</strong>.
+            </p>
+            <div class="row g-2 small font-mono mb-3">
+                <div class="col-6">
+                    <div class="p-2 rounded bg-black border border-secondary">
+                        <div class="text-muted">Estimators:</div>
+                        <div class="text-white fw-bold">100 Decision Trees</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="p-2 rounded bg-black border border-secondary">
+                        <div class="text-muted">Max Tree Depth:</div>
+                        <div class="text-white fw-bold">10 Levels</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="p-2 rounded bg-black border border-secondary">
+                        <div class="text-muted">Training Samples:</div>
+                        <div class="text-cyan fw-bold" id="metricTrainSamples">2,000</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="p-2 rounded bg-black border border-secondary">
+                        <div class="text-muted">Test Split Samples:</div>
+                        <div class="text-cyan fw-bold" id="metricTestSamples">500</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Model 2: Isolation Forest -->
+    <div class="col-lg-6">
+        <div class="soc-card h-100">
+            <div class="soc-card-header">
+                <div class="soc-card-title text-amber">
+                    <i class="bi bi-radar"></i>
+                    <span>Model 2: Isolation Forest (Anomaly Detection)</span>
+                </div>
+                <span class="badge bg-success font-mono">FITTED & ACTIVE</span>
+            </div>
+            <p class="small text-muted mb-3">
+                Unsupervised anomaly detection algorithm that isolates out-of-distribution observation vectors. 
+                Computes continuous multivariate anomaly scores without requiring pre-labeled attack samples.
+            </p>
+            <div class="row g-2 small font-mono mb-3">
+                <div class="col-6">
+                    <div class="p-2 rounded bg-black border border-secondary">
+                        <div class="text-muted">Isolation Trees:</div>
+                        <div class="text-white fw-bold">100 Trees</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="p-2 rounded bg-black border border-secondary">
+                        <div class="text-muted">Contamination Ratio:</div>
+                        <div class="text-white fw-bold">0.15 (15%)</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="p-2 rounded bg-black border border-secondary">
+                        <div class="text-muted">Output Metric:</div>
+                        <div class="text-amber fw-bold">Scaled Anomaly Index (0-100)</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="p-2 rounded bg-black border border-secondary">
+                        <div class="text-muted">Objective:</div>
+                        <div class="text-amber fw-bold">Zero-Day Outlier Discovery</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confusion Matrix & Feature Importance Charts -->
+<div class="row g-3 mb-4">
+    <!-- Confusion Matrix Heatmap -->
+    <div class="col-lg-5">
+        <div class="soc-card h-100">
+            <div class="soc-card-header">
+                <div class="soc-card-title text-white">
+                    <i class="bi bi-grid-3x3 text-cyan"></i>
+                    <span>Test Split Confusion Matrix</span>
+                </div>
+                <span class="badge bg-dark border border-secondary text-muted font-mono small">Scikit-learn</span>
+            </div>
+            <p class="small text-muted">Verification of prediction accuracy against ground-truth labels on the held-out test split:</p>
+            <div id="confusionMatrixContainer" class="py-2">
+                <!-- Heatmap generated by JS -->
+            </div>
+            <div class="d-flex justify-content-center gap-4 mt-3 small font-mono">
+                <span class="d-flex align-items-center gap-1"><span class="cm-cell cm-diagonal p-1 px-2">N</span> Correct Classification</span>
+                <span class="d-flex align-items-center gap-1"><span class="cm-cell cm-off-diagonal p-1 px-2">0</span> Misclassification</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feature Importances Horizontal Bar Chart -->
+    <div class="col-lg-7">
+        <div class="soc-card h-100">
+            <div class="soc-card-header">
+                <div class="soc-card-title text-white">
+                    <i class="bi bi-bar-chart-steps text-cyan"></i>
+                    <span>Random Forest Feature Weight Importances</span>
+                </div>
+                <span class="badge bg-dark border border-secondary text-cyan font-mono small">Gini Impurity</span>
+            </div>
+            <p class="small text-muted">Relative importance of each feature in determining attack vs benign traffic classifications:</p>
+            <div style="height: 260px; position: relative;">
+                <canvas id="featureImportanceChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Per-Class Performance Breakdown Table -->
+<div class="soc-card mb-4">
+    <div class="soc-card-header">
+        <div class="soc-card-title text-white">
+            <i class="bi bi-table text-cyan"></i>
+            <span>Per-Class Classification Metrics (Precision, Recall, F1-Score)</span>
+        </div>
+        <span class="badge bg-dark border border-secondary text-muted font-mono small">Classification Report</span>
+    </div>
+    <div class="table-soc-container">
+        <table class="table-soc">
+            <thead>
+                <tr>
+                    <th>Traffic Class Category</th>
+                    <th>Precision</th>
+                    <th>Recall</th>
+                    <th>F1-Score</th>
+                    <th>Support (Test Instances)</th>
+                </tr>
+            </thead>
+            <tbody id="classMetricsTbody">
+                <tr><td colspan="5" class="text-center text-muted py-3">Loading classification report...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Transparent Risk Scoring Formula Documentation -->
+<div class="soc-card p-4">
+    <h5 class="fw-bold text-white mb-2">
+        <i class="bi bi-calculator text-cyan me-2"></i> Composite Risk Scoring Architecture & Formula
+    </h5>
+    <p class="small text-muted mb-3">
+        API Sentinel utilizes a composite risk calculation engine that combines supervised classification probabilities,
+        unsupervised multivariate outlier distance, and deterministic security heuristics.
+    </p>
+
+    <div class="p-3 rounded bg-black border border-secondary font-mono small text-light mb-3">
+        <div class="text-cyan mb-1">// Mathematical Risk Formula:</div>
+        <code>Risk Score = Clamp0To100( (0.45 &times; RF_Risk) + (0.25 &times; IF_Anomaly) + (0.30 &times; Heuristic_Penalty) )</code>
+        <div class="mt-2 text-muted">
+            Where:
+            <br>&bull; <code>RF_Risk = (P(Suspicious) &times; 50) + (P(Attack) &times; 92)</code>
+            <br>&bull; <code>IF_Anomaly = Max(0, Min(100, (0.25 - DecisionFunction) &times; 160))</code>
+            <br>&bull; <code>Heuristic_Penalty = (PayloadRisk &times; 6.5) + (FailedLogins &times; 7.0) + RatePenalty</code>
+        </div>
+    </div>
+
+    <div class="row g-2 small">
+        <div class="col-sm-3">
+            <div class="p-2 rounded bg-black border border-success">
+                <span class="text-emerald fw-bold font-mono">0 – 29: LOW SEVERITY</span>
+                <div class="text-muted" style="font-size: 0.72rem;">Safe baseline API request. Allowed without restriction.</div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="p-2 rounded bg-black border border-warning">
+                <span class="text-amber fw-bold font-mono">30 – 59: MEDIUM SEVERITY</span>
+                <div class="text-muted" style="font-size: 0.72rem;">Suspicious activity. Flagged for behavioral tracking.</div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="p-2 rounded bg-black border border-warning">
+                <span class="text-warning fw-bold font-mono">60 – 79: HIGH SEVERITY</span>
+                <div class="text-muted" style="font-size: 0.72rem;">Probable attack pattern. Adaptive challenge or rate limiting applied.</div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="p-2 rounded bg-black border border-danger">
+                <span class="text-crimson fw-bold font-mono">80 – 100: CRITICAL</span>
+                <div class="text-muted" style="font-size: 0.72rem;">Active malicious threat. Dropped and blocked at API Gateway.</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        initModelsPage();
+    });
+</script>
+{% endblock %}
+

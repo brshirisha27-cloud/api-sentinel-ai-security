@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block title %}Attack Simulation Lab{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold text-white mb-0">Adversarial Attack Simulation Lab</h3>
+        <p class="text-muted small mb-0">Simulate synthetic API attack vectors locally to evaluate real-time ML detection algorithms and automated defensive actions</p>
+    </div>
+    <div class="d-flex align-items-center gap-2 mt-2 mt-sm-0">
+        <span class="badge bg-danger bg-opacity-25 border border-danger text-danger font-mono py-2 px-3">
+            <i class="bi bi-shield-lock-fill me-1"></i> SANDBOX ENVIRONMENT: SAFE LOCAL SIMULATION
+        </span>
+    </div>
+</div>
+
+<!-- Educational Disclaimer Banner -->
+<div class="alert alert-dark border border-secondary text-light p-3 mb-4 rounded-3 d-flex align-items-center gap-3">
+    <div class="fs-2 text-warning"><i class="bi bi-mortarboard-fill"></i></div>
+    <div>
+        <div class="fw-bold text-white">Academic Project Demonstration Environment</div>
+        <div class="small text-muted">
+            All simulation buttons generate controlled synthetic telemetry packets stored solely in your local SQLite database.
+            No network packets or malicious traffic are dispatched to any external or third-party computer systems.
+        </div>
+    </div>
+</div>
+
+<!-- 5 Interactive Attack Simulation Scenario Cards -->
+<div class="row g-3 mb-4">
+    <!-- 1. Normal API Request -->
+    <div class="col-md-6 col-lg-4">
+        <div class="sim-scenario-card border-success">
+            <div>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="badge bg-success bg-opacity-25 text-emerald border border-success font-mono">SCENARIO 01</span>
+                    <span class="badge bg-dark border border-secondary text-muted">Baseline Traffic</span>
+                </div>
+                <h5 class="text-white fw-bold mb-1">Standard API Traffic</h5>
+                <p class="small text-muted mb-2">Legitimate client browsing and transactional requests across public product catalogs and user profile endpoints.</p>
+                <div class="p-2 rounded bg-black border border-secondary mb-3 small font-mono">
+                    <div class="text-muted">Target: <span class="text-light">GET /api/v1/products</span></div>
+                    <div class="text-muted">Rate: <span class="text-emerald">3-8 req/min (Normal)</span></div>
+                    <div class="text-muted">Expected Risk: <span class="text-emerald">&lt; 25 (Low / Safe)</span></div>
+                </div>
+            </div>
+            <button class="btn btn-outline-success w-100" onclick="triggerSim('normal')">
+                <i class="bi bi-play-fill me-1"></i> Simulate Normal Traffic
+            </button>
+        </div>
+    </div>
+
+    <!-- 2. Brute Force Attack -->
+    <div class="col-md-6 col-lg-4">
+        <div class="sim-scenario-card border-danger">
+            <div>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="badge bg-danger bg-opacity-25 text-crimson border border-danger font-mono">SCENARIO 02</span>
+                    <span class="badge bg-dark border border-secondary text-danger">Authentication Threat</span>
+                </div>
+                <h5 class="text-white fw-bold mb-1">Brute Force / Stuffing</h5>
+                <p class="small text-muted mb-2">High-frequency password guessing attack targeting user login gateway from a single malicious source IP address.</p>
+                <div class="p-2 rounded bg-black border border-secondary mb-3 small font-mono">
+                    <div class="text-muted">Target: <span class="text-light">POST /api/v1/auth/login</span></div>
+                    <div class="text-muted">Failed Logins: <span class="text-crimson">8 consecutive 401s</span></div>
+                    <div class="text-muted">Expected Risk: <span class="text-crimson">85-95 (Critical)</span></div>
+                </div>
+            </div>
+            <button class="btn btn-outline-danger w-100" onclick="triggerSim('brute_force')">
+                <i class="bi bi-key-fill me-1"></i> Launch Brute Force Attack
+            </button>
+        </div>
+    </div>
+
+    <!-- 3. Traffic Spike / DoS -->
+    <div class="col-md-6 col-lg-4">
+        <div class="sim-scenario-card border-warning">
+            <div>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="badge bg-warning bg-opacity-25 text-amber border border-warning font-mono">SCENARIO 03</span>
+                    <span class="badge bg-dark border border-secondary text-warning">Volumetric Threat</span>
+                </div>
+                <h5 class="text-white fw-bold mb-1">Traffic Spike / DoS</h5>
+                <p class="small text-muted mb-2">Burst of 20 concurrent requests flooding analytics endpoints, inducing rate-limit throttling and severe latency degradation.</p>
+                <div class="p-2 rounded bg-black border border-secondary mb-3 small font-mono">
+                    <div class="text-muted">Target: <span class="text-light">GET /api/v1/analytics/reports</span></div>
+                    <div class="text-muted">Rate: <span class="text-amber">180+ req/min (HTTP 429)</span></div>
+                    <div class="text-muted">Expected Risk: <span class="text-amber">80-92 (Critical)</span></div>
+                </div>
+            </div>
+            <button class="btn btn-outline-warning w-100" onclick="triggerSim('dos_spike')">
+                <i class="bi bi-speedometer2 me-1"></i> Launch DoS Traffic Spike
+            </button>
+        </div>
+    </div>
+
+    <!-- 4. Unauthorized Access Attempt -->
+    <div class="col-md-6 col-lg-6">
+        <div class="sim-scenario-card border-info">
+            <div>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="badge bg-info bg-opacity-25 text-cyan border border-info font-mono">SCENARIO 04</span>
+                    <span class="badge bg-dark border border-secondary text-cyan">Access Control Threat</span>
+                </div>
+                <h5 class="text-white fw-bold mb-1">Unauthorized Access / BOLA Probe</h5>
+                <p class="small text-muted mb-2">Attacker presents forged or expired JWT bearer tokens attempting to access restricted administrative and tenant configuration endpoints.</p>
+                <div class="p-2 rounded bg-black border border-secondary mb-3 small font-mono">
+                    <div class="text-muted">Target: <span class="text-light">/api/v1/admin/users/export</span></div>
+                    <div class="text-muted">Auth Status: <span class="text-cyan">Forged / Tampered Bearer Token</span></div>
+                    <div class="text-muted">Expected Risk: <span class="text-cyan">70-85 (High Severity)</span></div>
+                </div>
+            </div>
+            <button class="btn btn-outline-info w-100" onclick="triggerSim('unauthorized')">
+                <i class="bi bi-person-x-fill me-1"></i> Simulate BOLA / Unauthorized Probe
+            </button>
+        </div>
+    </div>
+
+    <!-- 5. Suspicious Payload Simulation -->
+    <div class="col-md-6 col-lg-6">
+        <div class="sim-scenario-card border-danger">
+            <div>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="badge bg-danger bg-opacity-25 text-crimson border border-danger font-mono">SCENARIO 05</span>
+                    <span class="badge bg-dark border border-secondary text-danger">Injection Threat</span>
+                </div>
+                <h5 class="text-white fw-bold mb-1">Suspicious Payload Injection (SQLi / XSS)</h5>
+                <p class="small text-muted mb-2">Inbound HTTP payload containing malicious SQL query unions or cross-site scripting script tag injections.</p>
+                <div class="p-2 rounded bg-black border border-secondary mb-3 small font-mono">
+                    <div class="text-muted">Payload: <span class="text-crimson text-break">' UNION SELECT username, password_hash FROM users--</span></div>
+                    <div class="text-muted">Signature: <span class="text-crimson">Regex Heuristic 8.5/10</span></div>
+                    <div class="text-muted">Expected Risk: <span class="text-crimson">90-99 (Critical / Instant Block)</span></div>
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-outline-danger flex-grow-1" onclick="triggerSim('payload', 'sqli')">
+                    <i class="bi bi-database-fill-slash me-1"></i> Simulate SQLi
+                </button>
+                <button class="btn btn-outline-warning flex-grow-1" onclick="triggerSim('payload', 'xss')">
+                    <i class="bi bi-code-slash me-1"></i> Simulate XSS
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Simulation Terminal Execution Console -->
+<div class="row g-3">
+    <div class="col-lg-7">
+        <div class="soc-card h-100">
+            <div class="soc-card-header">
+                <div class="soc-card-title">
+                    <i class="bi bi-terminal-fill text-cyan"></i>
+                    <span>Real-Time Simulation Execution Stream</span>
+                </div>
+                <button id="clearConsoleBtn" class="btn btn-sm btn-cyber-outline py-0 px-2 small">
+                    <i class="bi bi-trash"></i> Clear Console
+                </button>
+            </div>
+            <div id="simConsole" class="simulation-console">
+                <div class="console-line info">
+                    <span class="text-muted">[INIT]</span> AI SENTINEL Adversarial Attack Simulation Lab initialized.
+                </div>
+                <div class="console-line info">
+                    <span class="text-muted">[READY]</span> Select any attack scenario button above to dispatch synthetic packets.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Simulation History -->
+    <div class="col-lg-5">
+        <div class="soc-card h-100">
+            <div class="soc-card-header">
+                <div class="soc-card-title">
+                    <i class="bi bi-clock-history text-amber"></i>
+                    <span>Simulation Run History</span>
+                </div>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-sm btn-cyber-outline py-0 px-2 small">
+                    Dashboard <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+            <div class="table-soc-container">
+                <table class="table-soc">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Scenario</th>
+                            <th>Risk</th>
+                            <th>Audit Summary</th>
+                        </tr>
+                    </thead>
+                    <tbody id="simHistoryTbody">
+                        <tr><td colspan="4" class="text-center text-muted py-3">Loading history...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        initSimulationPage();
+    });
+</script>
+{% endblock %}
+

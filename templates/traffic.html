@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block title %}API Traffic Monitoring{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold text-white mb-0">API Traffic Telemetry & Packet Inspection</h3>
+        <p class="text-muted small mb-0">Detailed event log of monitored API endpoints, latency metrics, and real-time AI risk evaluation</p>
+    </div>
+    <div class="d-flex align-items-center gap-2 mt-2 mt-sm-0">
+        <button class="btn btn-sm btn-cyber" data-bs-toggle="modal" data-bs-target="#customRequestModal">
+            <i class="bi bi-send-plus"></i> Ingest Custom Request
+        </button>
+        <button id="refreshTrafficBtn" class="btn btn-sm btn-cyber-outline">
+            <i class="bi bi-arrow-clockwise"></i> Refresh
+        </button>
+    </div>
+</div>
+
+<!-- Search & Filtering Control Bar -->
+<div class="soc-card mb-4 p-3">
+    <div class="row g-2 align-items-center">
+        <!-- Search Input -->
+        <div class="col-md-4">
+            <div class="input-group">
+                <span class="input-group-text bg-black border-secondary text-cyan"><i class="bi bi-search"></i></span>
+                <input type="text" id="trafficSearch" class="form-control form-control-cyber" placeholder="Search by ID, IP, endpoint, threat...">
+            </div>
+        </div>
+
+        <!-- Method Filter -->
+        <div class="col-6 col-md-2">
+            <select id="methodFilter" class="form-select form-select-cyber">
+                <option value="ALL">All Methods</option>
+                <option value="GET">GET</option>
+                <option value="POST">POST</option>
+                <option value="PUT">PUT</option>
+                <option value="DELETE">DELETE</option>
+            </select>
+        </div>
+
+        <!-- Classification Filter -->
+        <div class="col-6 col-md-3">
+            <select id="classFilter" class="form-select form-select-cyber">
+                <option value="ALL">All Classifications</option>
+                <option value="Normal">Normal Traffic</option>
+                <option value="Suspicious">Suspicious</option>
+                <option value="Potential Attack">Potential Attack</option>
+            </select>
+        </div>
+
+        <!-- Status Filter -->
+        <div class="col-6 col-md-2">
+            <select id="statusFilter" class="form-select form-select-cyber">
+                <option value="ALL">All Status Codes</option>
+                <option value="200">200 OK</option>
+                <option value="201">201 Created</option>
+                <option value="400">400 Bad Request</option>
+                <option value="401">401 Unauthorized</option>
+                <option value="403">403 Forbidden</option>
+                <option value="429">429 Rate Limited</option>
+                <option value="500">500 Server Error</option>
+            </select>
+        </div>
+
+        <!-- Total Count Badge -->
+        <div class="col-6 col-md-1 text-md-end">
+            <span id="trafficCountBadge" class="badge bg-dark border border-secondary text-cyan font-mono small py-2 px-2">
+                0 requests
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- Traffic Table -->
+<div class="soc-card p-0 mb-4">
+    <div class="table-soc-container">
+        <table class="table-soc">
+            <thead>
+                <tr>
+                    <th>Request ID</th>
+                    <th>Timestamp</th>
+                    <th>Method</th>
+                    <th>API Endpoint</th>
+                    <th>Source IP</th>
+                    <th>Status</th>
+                    <th>Latency</th>
+                    <th>Classification</th>
+                    <th>Risk Score</th>
+                </tr>
+            </thead>
+            <tbody id="trafficTableBody">
+                <tr><td colspan="9" class="text-center text-muted py-5">Loading API telemetry streams...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination Footer -->
+    <div class="p-3 border-top border-secondary d-flex justify-content-between align-items-center">
+        <div class="text-muted small">
+            Showing records with real-time ML score calculation
+        </div>
+        <nav aria-label="Traffic table pagination">
+            <ul class="pagination pagination-sm mb-0" id="trafficPagination">
+                <!-- Populated dynamically -->
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<!-- Ingest Custom API Request Modal -->
+<div class="modal fade" id="customRequestModal" tabindex="-1" aria-labelledby="customRequestModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary text-white">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title text-cyan" id="customRequestModalLabel">
+                    <i class="bi bi-terminal me-2"></i> Ingest Test API Request
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="small text-muted">Submit custom HTTP telemetry parameters directly to the dual-model AI detection engine to observe classification and risk calculation.</p>
+                <form id="customRequestForm">
+                    <div class="row g-2 mb-2">
+                        <div class="col-4">
+                            <label class="form-label small text-muted">Method</label>
+                            <select id="customMethod" class="form-select form-select-cyber">
+                                <option value="GET">GET</option>
+                                <option value="POST" selected>POST</option>
+                                <option value="PUT">PUT</option>
+                                <option value="DELETE">DELETE</option>
+                            </select>
+                        </div>
+                        <div class="col-8">
+                            <label class="form-label small text-muted">Endpoint</label>
+                            <input type="text" id="customEndpoint" class="form-control form-control-cyber" value="/api/v1/auth/login">
+                        </div>
+                    </div>
+
+                    <div class="row g-2 mb-2">
+                        <div class="col-6">
+                            <label class="form-label small text-muted">Source IP Address</label>
+                            <input type="text" id="customIp" class="form-control form-control-cyber" value="198.51.100.99">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small text-muted">HTTP Status Code</label>
+                            <input type="number" id="customStatus" class="form-control form-control-cyber" value="401">
+                        </div>
+                    </div>
+
+                    <div class="row g-2 mb-2">
+                        <div class="col-6">
+                            <label class="form-label small text-muted">Req Frequency (req/min)</label>
+                            <input type="number" id="customFreq" class="form-control form-control-cyber" value="45">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small text-muted">Consecutive Failed Logins</label>
+                            <input type="number" id="customFailed" class="form-control form-control-cyber" value="3">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small text-muted">Payload / Body Data</label>
+                        <textarea id="customPayload" class="form-control form-control-cyber font-mono" rows="3" placeholder='{"username": "admin", "password": "password123"}'></textarea>
+                        <div class="form-text text-muted" style="font-size: 0.72rem;">Try inserting SQL syntax like <code>' OR 1=1--</code> or <code>&lt;script&gt;</code> to test heuristic triggers.</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-cyber w-100">
+                        <i class="bi bi-cpu-fill"></i> Ingest & Score with AI Engine
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        initTrafficPage();
+
+        // Custom request submission
+        const customForm = document.getElementById('customRequestForm');
+        if (customForm) {
+            customForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const payloadData = {
+                    method: document.getElementById('customMethod').value,
+                    endpoint: document.getElementById('customEndpoint').value,
+                    ip_address: document.getElementById('customIp').value,
+                    status_code: parseInt(document.getElementById('customStatus').value) || 200,
+                    request_frequency: parseFloat(document.getElementById('customFreq').value) || 5,
+                    failed_login_count: parseInt(document.getElementById('customFailed').value) || 0,
+                    payload: document.getElementById('customPayload').value
+                };
+
+                try {
+                    const res = await fetch('/api/traffic', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payloadData)
+                    });
+                    const data = await res.json();
+                    if (res.ok) {
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('customRequestModal'));
+                        if (modal) modal.hide();
+                        showNotification('Request Ingested', `Risk Score: ${data.evaluation.risk_score} (${data.evaluation.classification})`, data.evaluation.risk_score > 60 ? 'danger' : 'success');
+                        loadTrafficData();
+                    } else {
+                        showNotification('Error', data.error || 'Failed to ingest request', 'danger');
+                    }
+                } catch (err) {
+                    showNotification('Network Error', err.message, 'danger');
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
+
