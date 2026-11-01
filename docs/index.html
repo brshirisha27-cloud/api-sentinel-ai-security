@@ -1047,6 +1047,10 @@
             initSampleData();
             initCharts();
             renderAll();
+            const hash = (window.location.hash || '').replace('#', '').toLowerCase();
+            if (['dashboard', 'traffic', 'alerts', 'simulation', 'models', 'logs'].includes(hash)) {
+                switchTab(hash);
+            }
         });
 
         function initClock() {

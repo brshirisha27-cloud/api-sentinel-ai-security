@@ -22,6 +22,8 @@
   <p align="center">
     <a href="https://brshirisha27-cloud.github.io/api-sentinel-ai-security/"><strong>🌐 Explore Live Showcase Webpage &raquo;</strong></a>
     &bull;
+    <a href="docs/DASHBOARD_WALKTHROUGH.md"><strong>📸 Visual Dashboard Guide &raquo;</strong></a>
+    &bull;
     <a href="#-quick-start-instructions"><strong>🚀 Quick Start</strong></a>
     &bull;
     <a href="#-5-minute-college-presentation-guide"><strong>🎓 Presentation Guide</strong></a>
