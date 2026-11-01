@@ -854,21 +854,21 @@ function renderConfusionMatrix(matrix) {
         <table class="cm-table">
             <thead>
                 <tr>
-                    <th class="text-muted small">Actual \\ Pred</th>
-                    ${predLabels.map(p => `<th class="text-cyan small">${p}</th>`).join('')}
+                    <th class="text-light-silver small fw-bold">Actual \\ Pred</th>
+                    ${predLabels.map(p => `<th class="text-cyan small fw-bold">${p}</th>`).join('')}
                 </tr>
             </thead>
             <tbody>
     `;
 
     for (let i = 0; i < matrix.length; i++) {
-        html += `<tr><td class="text-muted small fw-bold text-start">${labels[i]}</td>`;
+        html += `<tr><td class="text-light-silver small fw-bold text-start">${labels[i]}</td>`;
         for (let j = 0; j < matrix[i].length; j++) {
             const count = matrix[i][j];
             const isDiagonal = (i === j);
             html += `
                 <td>
-                    <div class="cm-cell ${isDiagonal ? 'cm-diagonal' : (count > 0 ? 'cm-off-diagonal' : 'bg-dark text-muted')}">
+                    <div class="cm-cell ${isDiagonal ? 'cm-diagonal' : (count > 0 ? 'cm-off-diagonal' : 'cm-zero')}">
                         ${count}
                     </div>
                 </td>

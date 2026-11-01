@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -735,12 +735,12 @@
                                     <div class="soc-card-title text-cyan"><i class="bi bi-diagram-3-fill"></i> Model 1: Random Forest Classifier</div>
                                     <span class="badge bg-success font-mono">FITTED & ACTIVE</span>
                                 </div>
-                                <p class="small text-muted mb-3">Supervised ensemble classifier trained on multivariate behavioral features to categorize API traffic into Normal (0), Suspicious (1), and Potential Attack (2).</p>
+                                <p class="small text-light-dim mb-3">Supervised ensemble classifier trained on multivariate behavioral features to categorize API traffic into <strong class="text-white">Normal (0)</strong>, <strong class="text-amber">Suspicious (1)</strong>, and <strong class="text-crimson">Potential Attack (2)</strong>.</p>
                                 <div class="row g-2 small font-mono">
-                                    <div class="col-6"><div class="p-2 rounded bg-black border border-secondary"><div class="text-muted">Estimators:</div><div class="text-white fw-bold">100 Decision Trees</div></div></div>
-                                    <div class="col-6"><div class="p-2 rounded bg-black border border-secondary"><div class="text-muted">Max Depth:</div><div class="text-white fw-bold">10 Levels</div></div></div>
-                                    <div class="col-6"><div class="p-2 rounded bg-black border border-secondary"><div class="text-muted">Training Samples:</div><div class="text-cyan fw-bold">2,000</div></div></div>
-                                    <div class="col-6"><div class="p-2 rounded bg-black border border-secondary"><div class="text-muted">Test Split:</div><div class="text-cyan fw-bold">500 Samples</div></div></div>
+                                    <div class="col-6"><div class="p-2 rounded bg-black border border-secondary"><div class="metric-box-sublabel text-cyan"><i class="bi bi-diagram-2"></i> ESTIMATORS:</div><div class="text-white fw-bold fs-6">100 Decision Trees</div></div></div>
+                                    <div class="col-6"><div class="p-2 rounded bg-black border border-secondary"><div class="metric-box-sublabel text-cyan"><i class="bi bi-layers"></i> MAX DEPTH:</div><div class="text-white fw-bold fs-6">10 Levels</div></div></div>
+                                    <div class="col-6"><div class="p-2 rounded bg-black border border-secondary"><div class="metric-box-sublabel text-cyan"><i class="bi bi-database"></i> TRAINING SAMPLES:</div><div class="text-cyan fw-bold fs-6">2,000 Samples</div></div></div>
+                                    <div class="col-6"><div class="p-2 rounded bg-black border border-secondary"><div class="metric-box-sublabel text-cyan"><i class="bi bi-pie-chart"></i> TEST SPLIT:</div><div class="text-cyan fw-bold fs-6">500 Samples</div></div></div>
                                 </div>
                             </div>
                         </div>
@@ -750,12 +750,12 @@
                                     <div class="soc-card-title text-amber"><i class="bi bi-radar"></i> Model 2: Isolation Forest</div>
                                     <span class="badge bg-success font-mono">FITTED & ACTIVE</span>
                                 </div>
-                                <p class="small text-muted mb-3">Unsupervised anomaly detection algorithm that isolates out-of-distribution observation vectors to discover zero-day outlier patterns.</p>
+                                <p class="small text-light-dim mb-3">Unsupervised anomaly detection algorithm that isolates out-of-distribution observation vectors to discover zero-day outlier patterns.</p>
                                 <div class="row g-2 small font-mono">
-                                    <div class="col-6"><div class="p-2 rounded bg-black border border-secondary"><div class="text-muted">Isolation Trees:</div><div class="text-white fw-bold">100 Trees</div></div></div>
-                                    <div class="col-6"><div class="p-2 rounded bg-black border border-secondary"><div class="text-muted">Contamination:</div><div class="text-white fw-bold">0.15 (15%)</div></div></div>
-                                    <div class="col-6"><div class="p-2 rounded bg-black border border-secondary"><div class="text-muted">Metric Output:</div><div class="text-amber fw-bold">Scaled Anomaly (0-100)</div></div></div>
-                                    <div class="col-6"><div class="p-2 rounded bg-black border border-secondary"><div class="text-muted">Objective:</div><div class="text-amber fw-bold">Zero-Day Discovery</div></div></div>
+                                    <div class="col-6"><div class="p-2 rounded bg-black border border-secondary"><div class="metric-box-sublabel text-amber"><i class="bi bi-tree"></i> ISOLATION TREES:</div><div class="text-white fw-bold fs-6">100 Trees</div></div></div>
+                                    <div class="col-6"><div class="p-2 rounded bg-black border border-secondary"><div class="metric-box-sublabel text-amber"><i class="bi bi-sliders"></i> CONTAMINATION:</div><div class="text-white fw-bold fs-6">0.15 (15%)</div></div></div>
+                                    <div class="col-6"><div class="p-2 rounded bg-black border border-secondary"><div class="metric-box-sublabel text-amber"><i class="bi bi-speedometer"></i> METRIC OUTPUT:</div><div class="text-amber fw-bold fs-6">Scaled Anomaly (0-100)</div></div></div>
+                                    <div class="col-6"><div class="p-2 rounded bg-black border border-secondary"><div class="metric-box-sublabel text-amber"><i class="bi bi-bullseye"></i> OBJECTIVE:</div><div class="text-amber fw-bold fs-6">Zero-Day Discovery</div></div></div>
                                 </div>
                             </div>
                         </div>
@@ -767,44 +767,44 @@
                             <div class="soc-card h-100">
                                 <div class="soc-card-header">
                                     <div class="soc-card-title text-white"><i class="bi bi-grid-3x3 text-cyan"></i> Test Split Confusion Matrix</div>
-                                    <span class="badge bg-dark border border-secondary text-muted font-mono small">Scikit-learn</span>
+                                    <span class="badge bg-dark border border-cyan text-cyan font-mono small"><i class="bi bi-cpu"></i> Scikit-Learn v1.4</span>
                                 </div>
-                                <p class="small text-muted">Verification of prediction accuracy against ground-truth labels on the held-out test split:</p>
+                                <p class="small text-light-dim">Verification of prediction accuracy against ground-truth labels on the held-out test split:</p>
                                 <div class="py-2">
                                     <table class="cm-table">
                                         <thead>
                                             <tr>
-                                                <th class="text-muted small">Actual \ Pred</th>
-                                                <th class="text-cyan small">Pred Normal</th>
-                                                <th class="text-cyan small">Pred Suspicious</th>
-                                                <th class="text-cyan small">Pred Attack</th>
+                                                <th class="text-light-silver small fw-bold">Actual \ Pred</th>
+                                                <th class="text-emerald small fw-bold">Pred Normal</th>
+                                                <th class="text-amber small fw-bold">Pred Suspicious</th>
+                                                <th class="text-crimson small fw-bold">Pred Attack</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td class="text-muted small fw-bold text-start">True Normal</td>
+                                                <td class="text-light-silver small fw-bold text-start">True Normal</td>
                                                 <td><div class="cm-cell cm-diagonal">325</div></td>
-                                                <td><div class="cm-cell bg-dark text-muted">0</div></td>
-                                                <td><div class="cm-cell bg-dark text-muted">0</div></td>
+                                                <td><div class="cm-cell cm-zero">0</div></td>
+                                                <td><div class="cm-cell cm-zero">0</div></td>
                                             </tr>
                                             <tr>
-                                                <td class="text-muted small fw-bold text-start">True Suspicious</td>
-                                                <td><div class="cm-cell bg-dark text-muted">0</div></td>
+                                                <td class="text-light-silver small fw-bold text-start">True Suspicious</td>
+                                                <td><div class="cm-cell cm-zero">0</div></td>
                                                 <td><div class="cm-cell cm-diagonal">100</div></td>
-                                                <td><div class="cm-cell bg-dark text-muted">0</div></td>
+                                                <td><div class="cm-cell cm-zero">0</div></td>
                                             </tr>
                                             <tr>
-                                                <td class="text-muted small fw-bold text-start">True Attack</td>
-                                                <td><div class="cm-cell bg-dark text-muted">0</div></td>
-                                                <td><div class="cm-cell bg-dark text-muted">0</div></td>
+                                                <td class="text-light-silver small fw-bold text-start">True Attack</td>
+                                                <td><div class="cm-cell cm-zero">0</div></td>
+                                                <td><div class="cm-cell cm-zero">0</div></td>
                                                 <td><div class="cm-cell cm-diagonal">75</div></td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
                                 <div class="d-flex justify-content-center gap-4 mt-3 small font-mono">
-                                    <span class="d-flex align-items-center gap-1"><span class="cm-cell cm-diagonal p-1 px-2">500</span> Correct (100%)</span>
-                                    <span class="d-flex align-items-center gap-1"><span class="cm-cell cm-off-diagonal p-1 px-2">0</span> Misclassified</span>
+                                    <span class="d-flex align-items-center gap-1"><span class="cm-cell cm-diagonal p-1 px-2">500</span> <span class="text-light-silver">Correct (100%)</span></span>
+                                    <span class="d-flex align-items-center gap-1"><span class="cm-cell cm-off-diagonal p-1 px-2">0</span> <span class="text-light-dim">Misclassified</span></span>
                                 </div>
                             </div>
                         </div>
@@ -813,9 +813,9 @@
                             <div class="soc-card h-100">
                                 <div class="soc-card-header">
                                     <div class="soc-card-title text-white"><i class="bi bi-bar-chart-steps text-cyan"></i> Feature Weight Importances</div>
-                                    <span class="badge bg-dark border border-secondary text-cyan font-mono small">Gini Impurity</span>
+                                    <span class="badge bg-dark border border-cyan text-cyan font-mono small"><i class="bi bi-sliders"></i> Gini Impurity</span>
                                 </div>
-                                <p class="small text-muted">Relative importance of each feature in determining attack vs benign traffic classifications:</p>
+                                <p class="small text-light-dim">Relative importance of each feature in determining attack vs benign traffic classifications:</p>
                                 <div style="height: 260px; position: relative;">
                                     <canvas id="featureImportanceChart"></canvas>
                                 </div>

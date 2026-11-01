@@ -86,33 +86,33 @@
                 </div>
                 <span class="badge bg-success font-mono">FITTED & ACTIVE</span>
             </div>
-            <p class="small text-muted mb-3">
+            <p class="small text-light-dim mb-3">
                 Supervised ensemble classifier trained on multivariate behavioral features to categorize API traffic into 
-                <strong class="text-white">Normal (0)</strong>, <strong class="text-warning">Suspicious (1)</strong>, and <strong class="text-danger">Potential Attack (2)</strong>.
+                <strong class="text-white">Normal (0)</strong>, <strong class="text-amber">Suspicious (1)</strong>, and <strong class="text-crimson">Potential Attack (2)</strong>.
             </p>
             <div class="row g-2 small font-mono mb-3">
                 <div class="col-6">
                     <div class="p-2 rounded bg-black border border-secondary">
-                        <div class="text-muted">Estimators:</div>
-                        <div class="text-white fw-bold">100 Decision Trees</div>
+                        <div class="metric-box-sublabel text-cyan"><i class="bi bi-diagram-2"></i> ESTIMATORS:</div>
+                        <div class="text-white fw-bold fs-6">100 Decision Trees</div>
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="p-2 rounded bg-black border border-secondary">
-                        <div class="text-muted">Max Tree Depth:</div>
-                        <div class="text-white fw-bold">10 Levels</div>
+                        <div class="metric-box-sublabel text-cyan"><i class="bi bi-layers"></i> MAX TREE DEPTH:</div>
+                        <div class="text-white fw-bold fs-6">10 Levels</div>
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="p-2 rounded bg-black border border-secondary">
-                        <div class="text-muted">Training Samples:</div>
-                        <div class="text-cyan fw-bold" id="metricTrainSamples">2,000</div>
+                        <div class="metric-box-sublabel text-cyan"><i class="bi bi-database"></i> TRAINING SAMPLES:</div>
+                        <div class="text-cyan fw-bold fs-6" id="metricTrainSamples">2,000</div>
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="p-2 rounded bg-black border border-secondary">
-                        <div class="text-muted">Test Split Samples:</div>
-                        <div class="text-cyan fw-bold" id="metricTestSamples">500</div>
+                        <div class="metric-box-sublabel text-cyan"><i class="bi bi-pie-chart"></i> TEST SPLIT SAMPLES:</div>
+                        <div class="text-cyan fw-bold fs-6" id="metricTestSamples">500</div>
                     </div>
                 </div>
             </div>
@@ -129,33 +129,33 @@
                 </div>
                 <span class="badge bg-success font-mono">FITTED & ACTIVE</span>
             </div>
-            <p class="small text-muted mb-3">
+            <p class="small text-light-dim mb-3">
                 Unsupervised anomaly detection algorithm that isolates out-of-distribution observation vectors. 
                 Computes continuous multivariate anomaly scores without requiring pre-labeled attack samples.
             </p>
             <div class="row g-2 small font-mono mb-3">
                 <div class="col-6">
                     <div class="p-2 rounded bg-black border border-secondary">
-                        <div class="text-muted">Isolation Trees:</div>
-                        <div class="text-white fw-bold">100 Trees</div>
+                        <div class="metric-box-sublabel text-amber"><i class="bi bi-tree"></i> ISOLATION TREES:</div>
+                        <div class="text-white fw-bold fs-6">100 Trees</div>
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="p-2 rounded bg-black border border-secondary">
-                        <div class="text-muted">Contamination Ratio:</div>
-                        <div class="text-white fw-bold">0.15 (15%)</div>
+                        <div class="metric-box-sublabel text-amber"><i class="bi bi-sliders"></i> CONTAMINATION RATIO:</div>
+                        <div class="text-white fw-bold fs-6">0.15 (15%)</div>
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="p-2 rounded bg-black border border-secondary">
-                        <div class="text-muted">Output Metric:</div>
-                        <div class="text-amber fw-bold">Scaled Anomaly Index (0-100)</div>
+                        <div class="metric-box-sublabel text-amber"><i class="bi bi-speedometer"></i> OUTPUT METRIC:</div>
+                        <div class="text-amber fw-bold fs-6">Scaled Anomaly Index (0-100)</div>
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="p-2 rounded bg-black border border-secondary">
-                        <div class="text-muted">Objective:</div>
-                        <div class="text-amber fw-bold">Zero-Day Outlier Discovery</div>
+                        <div class="metric-box-sublabel text-amber"><i class="bi bi-bullseye"></i> OBJECTIVE:</div>
+                        <div class="text-amber fw-bold fs-6">Zero-Day Outlier Discovery</div>
                     </div>
                 </div>
             </div>
@@ -173,15 +173,15 @@
                     <i class="bi bi-grid-3x3 text-cyan"></i>
                     <span>Test Split Confusion Matrix</span>
                 </div>
-                <span class="badge bg-dark border border-secondary text-muted font-mono small">Scikit-learn</span>
+                <span class="badge bg-dark border border-cyan text-cyan font-mono small"><i class="bi bi-cpu"></i> Scikit-Learn v1.4</span>
             </div>
-            <p class="small text-muted">Verification of prediction accuracy against ground-truth labels on the held-out test split:</p>
+            <p class="small text-light-dim">Verification of prediction accuracy against ground-truth labels on the held-out test split:</p>
             <div id="confusionMatrixContainer" class="py-2">
                 <!-- Heatmap generated by JS -->
             </div>
             <div class="d-flex justify-content-center gap-4 mt-3 small font-mono">
-                <span class="d-flex align-items-center gap-1"><span class="cm-cell cm-diagonal p-1 px-2">N</span> Correct Classification</span>
-                <span class="d-flex align-items-center gap-1"><span class="cm-cell cm-off-diagonal p-1 px-2">0</span> Misclassification</span>
+                <span class="d-flex align-items-center gap-1"><span class="cm-cell cm-diagonal p-1 px-2">N</span> <span class="text-light-silver">Correct Classification</span></span>
+                <span class="d-flex align-items-center gap-1"><span class="cm-cell cm-off-diagonal p-1 px-2">0</span> <span class="text-light-dim">Misclassification</span></span>
             </div>
         </div>
     </div>
@@ -194,9 +194,9 @@
                     <i class="bi bi-bar-chart-steps text-cyan"></i>
                     <span>Random Forest Feature Weight Importances</span>
                 </div>
-                <span class="badge bg-dark border border-secondary text-cyan font-mono small">Gini Impurity</span>
+                <span class="badge bg-dark border border-cyan text-cyan font-mono small"><i class="bi bi-sliders"></i> Gini Impurity</span>
             </div>
-            <p class="small text-muted">Relative importance of each feature in determining attack vs benign traffic classifications:</p>
+            <p class="small text-light-dim">Relative importance of each feature in determining attack vs benign traffic classifications:</p>
             <div style="height: 260px; position: relative;">
                 <canvas id="featureImportanceChart"></canvas>
             </div>
