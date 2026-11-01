@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API SENTINEL | AI-Powered API Security & Threat Detection Platform</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+
+    <style>
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-card: #111827;
+            --bg-elevated: #1e293b;
+            --accent-cyan: #00f0ff;
+            --accent-blue: #3b82f6;
+            --threat-safe: #10b981;
+            --threat-medium: #f59e0b;
+            --threat-critical: #ef4444;
+            --border-color: #1e293b;
+            --font-mono: "Fira Code", monospace;
+            --font-sans: "Inter", sans-serif;
+        }
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-primary);
+            color: #f8fafc;
+            line-height: 1.6;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+        .font-mono { font-family: var(--font-mono); }
+        .text-cyan { color: var(--accent-cyan) !important; }
+        .text-emerald { color: var(--threat-safe) !important; }
+        .text-amber { color: var(--threat-medium) !important; }
+        .text-crimson { color: var(--threat-critical) !important; }
+        
+        .soc-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            transition: all 0.25s ease;
+        }
+        .soc-card:hover {
+            border-color: rgba(0, 240, 255, 0.4);
+        }
+        .kpi-card {
+            padding: 1.25rem;
+            border-radius: 12px;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 3px;
+        }
+        .kpi-cyan::before { background: var(--accent-cyan); }
+        .kpi-green::before { background: var(--threat-safe); }
+        .kpi-amber::before { background: var(--threat-medium); }
+        .kpi-red::before { background: var(--threat-critical); }
+
+        .btn-cyber {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+            color: #090d16;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            padding: 0.55rem 1.25rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.25s ease;
+        }
+        .btn-cyber:hover {
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+            color: #000;
+        }
+        .btn-cyber-outline {
+            background: transparent;
+            color: var(--accent-cyan);
+            border: 1px solid rgba(0, 240, 255, 0.4);
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 0.55rem 1.25rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-cyber-outline:hover {
+            background: rgba(0, 240, 255, 0.1);
+            color: #ffffff;
+            border-color: var(--accent-cyan);
+        }
+        .simulation-console {
+            background-color: #060911;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: #38bdf8;
+            height: 240px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Header -->
+    <nav class="navbar navbar-dark bg-dark bg-opacity-75 border-bottom border-secondary sticky-top px-3">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+                <span class="badge bg-primary text-black p-2 rounded-3"><i class="bi bi-shield-shaded fs-5"></i></span>
+                <div>
+                    <span class="fw-bold tracking-wide">API SENTINEL</span>
+                    <span class="d-none d-md-inline-block small text-cyan ms-2">Intelligent API Protection. Real-Time Threat Detection.</span>
+                </div>
+            </a>
+            <div class="d-flex align-items-center gap-2">
+                <a href="https://github.com/brshirisha27-cloud/api-sentinel-ai-security" target="_blank" class="btn btn-sm btn-cyber-outline">
+                    <i class="bi bi-github"></i> GitHub Repository
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Showcase Section -->
+    <div class="container py-5">
+        <div class="row align-items-center mb-5">
+            <div class="col-lg-8">
+                <div class="badge bg-dark border border-secondary text-cyan font-mono mb-3 py-2 px-3">
+                    <i class="bi bi-broadcast me-1"></i> SOC THREAT INTELLIGENCE &amp; API MONITORING
+                </div>
+                <h1 class="display-4 fw-extrabold text-white mb-3">
+                    AI-Powered API Security &amp; <span class="text-cyan">Intelligent Threat Detection</span>
+                </h1>
+                <p class="lead text-muted mb-4">
+                    An enterprise-grade Security Operations Center (SOC) platform leveraging dual-model machine learning
+                    (Random Forest + Isolation Forest) to monitor API traffic, identify zero-day attacks, and execute automated mitigation.
+                </p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="#demoSection" class="btn btn-cyber">
+                        <i class="bi bi-play-circle-fill"></i> Test Interactive Attack Lab
+                    </a>
+                    <a href="https://github.com/brshirisha27-cloud/api-sentinel-ai-security" target="_blank" class="btn btn-cyber-outline">
+                        <i class="bi bi-code-slash"></i> View Python Flask Source
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center mt-4 mt-lg-0">
+                <div class="p-4 rounded-4 bg-dark bg-opacity-50 border border-secondary">
+                    <div class="text-muted small fw-bold mb-2">SYSTEM THREAT LEVEL</div>
+                    <div class="display-6 fw-bold text-emerald font-mono mb-2">DEFCON 5</div>
+                    <div class="badge bg-success bg-opacity-25 border border-success text-emerald font-mono py-2 px-3">
+                        BASELINE NORMAL
+                    </div>
+                    <div class="small text-muted mt-3 font-mono">Dual ML Pipeline: Online</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI Metrics Grid -->
+        <div class="row g-3 mb-5">
+            <div class="col-6 col-lg-3">
+                <div class="kpi-card kpi-cyan">
+                    <div class="small text-muted fw-bold">TOTAL REQUESTS</div>
+                    <div class="h2 text-cyan font-mono my-1" id="kpiTotal">1,482</div>
+                    <div class="small text-muted">All monitored telemetry</div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="kpi-card kpi-green">
+                    <div class="small text-muted fw-bold">SAFE REQUESTS</div>
+                    <div class="h2 text-emerald font-mono my-1" id="kpiSafe">1,390</div>
+                    <div class="small text-muted">Normal operations (93.8%)</div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="kpi-card kpi-amber">
+                    <div class="small text-muted fw-bold">SUSPICIOUS EVENTS</div>
+                    <div class="h2 text-amber font-mono my-1" id="kpiSuspicious">68</div>
+                    <div class="small text-muted">Flagged for SOC review</div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="kpi-card kpi-red">
+                    <div class="small text-muted fw-bold">BLOCKED THREATS</div>
+                    <div class="h2 text-crimson font-mono my-1" id="kpiBlocked">24</div>
+                    <div class="small text-muted">Dropped at API Gateway</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive Attack Simulation Lab Section -->
+        <div id="demoSection" class="soc-card mb-5 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h4 class="text-white fw-bold mb-1"><i class="bi bi-lightning-charge-fill text-cyan me-2"></i>Interactive Adversarial Attack Lab</h4>
+                    <p class="small text-muted mb-0">Simulate attack scenarios below to test the AI risk scoring algorithms in real time:</p>
+                </div>
+                <span class="badge bg-dark border border-secondary text-cyan font-mono">Interactive Demo</span>
+            </div>
+
+            <div class="row g-2 mb-4">
+                <div class="col-md-3">
+                    <button class="btn btn-outline-success w-100 py-2 text-start font-mono small" onclick="runClientSim('normal')">
+                        <i class="bi bi-check-circle me-1"></i> Normal Traffic
+                    </button>
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-outline-danger w-100 py-2 text-start font-mono small" onclick="runClientSim('brute_force')">
+                        <i class="bi bi-key me-1"></i> Brute Force Attack
+                    </button>
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-outline-warning w-100 py-2 text-start font-mono small" onclick="runClientSim('dos')">
+                        <i class="bi bi-speedometer2 me-1"></i> DoS Traffic Spike
+                    </button>
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-outline-danger w-100 py-2 text-start font-mono small" onclick="runClientSim('sqli')">
+                        <i class="bi bi-code-slash me-1"></i> SQLi Injection
+                    </button>
+                </div>
+            </div>
+
+            <!-- Simulation Console & Real-Time Chart -->
+            <div class="row g-3">
+                <div class="col-lg-6">
+                    <div class="small text-muted fw-bold mb-2 font-mono"><i class="bi bi-terminal me-1"></i>Live Telemetry Stream:</div>
+                    <div id="demoConsole" class="simulation-console">
+                        <div>[SYSTEM] API Sentinel detection engine initialized.</div>
+                        <div class="text-cyan">[READY] Click any simulation button above to dispatch synthetic API packets.</div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="small text-muted fw-bold mb-2 font-mono"><i class="bi bi-graph-up me-1"></i>Risk Score Activity Timeline:</div>
+                    <div style="height: 240px; position: relative;">
+                        <canvas id="demoChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Academic Technology & Architecture Overview -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-6">
+                <div class="soc-card h-100">
+                    <h5 class="fw-bold text-white mb-3"><i class="bi bi-cpu text-cyan me-2"></i>Machine Learning Dual-Engine</h5>
+                    <ul class="list-unstyled small text-muted">
+                        <li class="mb-2"><strong class="text-white">Model 1: Random Forest Classifier</strong> — 100 decision trees classifying requests into Normal (0), Suspicious (1), and Potential Attack (2) across 8 behavioral metrics.</li>
+                        <li class="mb-2"><strong class="text-white">Model 2: Isolation Forest</strong> — Unsupervised anomaly detection isolating out-of-distribution traffic vectors to discover zero-day attacks.</li>
+                        <li><strong class="text-white">Composite Risk Scoring</strong> — Combines classification probabilities, multivariate outlier distance, and deterministic heuristics into a transparent 0–100 risk score.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="soc-card h-100">
+                    <h5 class="fw-bold text-white mb-3"><i class="bi bi-terminal-split text-cyan me-2"></i>How to Run Locally</h5>
+                    <div class="p-3 rounded bg-black border border-secondary font-mono small text-light mb-2">
+                        <div>git clone https://github.com/brshirisha27-cloud/api-sentinel-ai-security.git</div>
+                        <div>cd api-sentinel-ai-security</div>
+                        <div>pip install -r requirements.txt</div>
+                        <div class="text-cyan">python app.py</div>
+                    </div>
+                    <div class="small text-muted">
+                        Runs locally on <code>http://127.0.0.1:5000</code> with a persistent SQLite database and interactive SOC dashboard.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center py-4 border-top border-secondary text-muted small">
+            <div><strong>API SENTINEL</strong> &bull; AI-Powered API Security Platform</div>
+            <div class="mt-1">Built with Python Flask, Scikit-learn, SQLite, Bootstrap 5, and Chart.js</div>
+            <div class="mt-2">
+                <a href="https://github.com/brshirisha27-cloud/api-sentinel-ai-security" target="_blank" class="text-cyan text-decoration-none">
+                    <i class="bi bi-github me-1"></i> github.com/brshirisha27-cloud/api-sentinel-ai-security
+                </a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Interactive Client Simulation Script
+        let chart;
+        const timelineLabels = ['12:00', '12:05', '12:10', '12:15', '12:20', '12:25'];
+        const riskData = [12, 15, 14, 18, 16, 20];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const ctx = document.getElementById('demoChart').getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: timelineLabels,
+                    datasets: [{
+                        label: 'Risk Score (0-100)',
+                        data: riskData,
+                        borderColor: '#00f0ff',
+                        backgroundColor: 'rgba(0, 240, 255, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { min: 0, max: 100, ticks: { color: '#00f0ff' } },
+                        x: { ticks: { color: '#64748b' } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        });
+
+        function runClientSim(type) {
+            const consoleEl = document.getElementById('demoConsole');
+            const now = new Date().toLocaleTimeString();
+
+            if (type === 'normal') {
+                consoleEl.innerHTML += `<div class="text-light">[${now}] [DISPATCH] GET /api/v1/products - IP: 192.168.1.105</div>`;
+                consoleEl.innerHTML += `<div class="text-success">[${now}] [ML ENGINE] Classified: Safe (Risk Score: 12/100) - Allowed</div>`;
+                updateChart(12);
+            } else if (type === 'brute_force') {
+                consoleEl.innerHTML += `<div class="text-danger">[${now}] [DISPATCH] POST /api/v1/auth/login - IP: 198.51.100.44 (8 failed attempts)</div>`;
+                consoleEl.innerHTML += `<div class="text-danger fw-bold">[${now}] [ALERT] Credential Stuffing / Brute Force Detected (Risk Score: 92/100) - Blocked</div>`;
+                updateChart(92);
+                document.getElementById('kpiBlocked').innerText = parseInt(document.getElementById('kpiBlocked').innerText) + 1;
+            } else if (type === 'dos') {
+                consoleEl.innerHTML += `<div class="text-warning">[${now}] [DISPATCH] GET /api/v1/reports - IP: 203.0.113.88 (180 req/min flood)</div>`;
+                consoleEl.innerHTML += `<div class="text-warning fw-bold">[${now}] [ALERT] Volumetric Spike / Rate Limit DoS Detected (Risk Score: 85/100) - Throttled</div>`;
+                updateChart(85);
+            } else if (type === 'sqli') {
+                consoleEl.innerHTML += `<div class="text-danger">[${now}] [DISPATCH] POST /api/v1/users/search - Payload: ' UNION SELECT username, password FROM users--</div>`;
+                consoleEl.innerHTML += `<div class="text-danger fw-bold">[${now}] [ALERT] SQL Injection Detected in Payload (Risk Score: 96/100) - Blocked at WAF</div>`;
+                updateChart(96);
+                document.getElementById('kpiBlocked').innerText = parseInt(document.getElementById('kpiBlocked').innerText) + 1;
+            }
+            consoleEl.scrollTop = consoleEl.scrollHeight;
+        }
+
+        function updateChart(score) {
+            const timeStr = new Date().toLocaleTimeString().slice(0, 5);
+            timelineLabels.push(timeStr);
+            riskData.push(score);
+            if (timelineLabels.length > 8) {
+                timelineLabels.shift();
+                riskData.shift();
+            }
+            chart.update();
+        }
+    </script>
+</body>
+</html>
