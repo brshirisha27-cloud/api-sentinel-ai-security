@@ -24,11 +24,11 @@
     &bull;
     <a href="docs/DASHBOARD_WALKTHROUGH.md"><strong>📸 Visual Dashboard Guide &raquo;</strong></a>
     &bull;
+    <a href="docs/API_SENTINEL_SOC_WALKTHROUGH.pdf"><strong>📄 Download PDF Manual &raquo;</strong></a>
+    &bull;
     <a href="#-quick-start-instructions"><strong>🚀 Quick Start</strong></a>
     &bull;
     <a href="#-5-minute-college-presentation-guide"><strong>🎓 Presentation Guide</strong></a>
-    &bull;
-    <a href="#-attack-simulation-lab"><strong>🧪 Simulation Lab</strong></a>
   </p>
 
 </div>
