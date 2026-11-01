@@ -29,7 +29,7 @@
                 </div>
             </div>
             <div class="kpi-value text-cyan" id="kpiTotalRequests">0</div>
-            <div class="kpi-subtext">All API calls processed</div>
+            <div class="kpi-subtext"><i class="bi bi-arrow-up-right text-cyan"></i> Inbound HTTP Telemetry</div>
         </div>
     </div>
 
@@ -42,7 +42,7 @@
                 </div>
             </div>
             <div class="kpi-value text-emerald" id="kpiSafeRequests">0</div>
-            <div class="kpi-subtext">Normal operational baseline</div>
+            <div class="kpi-subtext"><i class="bi bi-check-circle-fill text-emerald"></i> Normal Behavioral Baseline</div>
         </div>
     </div>
 
@@ -55,7 +55,7 @@
                 </div>
             </div>
             <div class="kpi-value text-amber" id="kpiSuspiciousRequests">0</div>
-            <div class="kpi-subtext">Flagged for SOC review</div>
+            <div class="kpi-subtext"><i class="bi bi-eye-fill text-amber"></i> Flagged for Behavioral Triage</div>
         </div>
     </div>
 
@@ -68,33 +68,70 @@
                 </div>
             </div>
             <div class="kpi-value text-crimson" id="kpiBlockedRequests">0</div>
-            <div class="kpi-subtext">Mitigated / Dropped at WAF</div>
+            <div class="kpi-subtext"><i class="bi bi-slash-circle-fill text-crimson"></i> Dropped & Blocked at WAF</div>
         </div>
     </div>
 </div>
 
-<!-- Threat Matrix & Charts Row -->
+<!-- SOC Threat Radar & Charts Row -->
 <div class="row g-3 mb-4">
+    <!-- Threat Radar Scope & DEFCON Gauge -->
+    <div class="col-lg-4">
+        <div class="soc-card h-100 d-flex flex-column justify-content-between">
+            <div class="soc-card-header">
+                <div class="soc-card-title">
+                    <i class="bi bi-radar text-cyan"></i>
+                    <span>Live Threat Radar Scope</span>
+                </div>
+                <span class="badge bg-dark border border-secondary text-cyan font-mono small">360° Sweep</span>
+            </div>
+            <div class="py-2 text-center">
+                <div class="radar-scope-wrapper">
+                    <div class="radar-scope">
+                        <div class="radar-ring r1"></div>
+                        <div class="radar-ring r2"></div>
+                        <div class="radar-crosshair-h"></div>
+                        <div class="radar-crosshair-v"></div>
+                        <div class="radar-sweep"></div>
+                        <!-- Animated glowing radar blips -->
+                        <div class="radar-blip" style="top: 28%; left: 68%;"></div>
+                        <div class="radar-blip" style="top: 72%; left: 32%; background: #ffb703; box-shadow: 0 0 8px #ffb703;"></div>
+                        <div class="radar-blip" style="top: 48%; left: 18%; background: #00f0ff; box-shadow: 0 0 8px #00f0ff;"></div>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <span class="badge bg-success bg-opacity-25 border border-success text-emerald font-mono small py-1 px-3">
+                        <i class="bi bi-shield-check me-1"></i> ACTIVE BEHAVIORAL SONAR
+                    </span>
+                </div>
+            </div>
+            <div class="border-top border-secondary pt-2 mt-2 d-flex justify-content-between align-items-center small font-mono">
+                <span class="text-muted">Sonar: <strong class="text-cyan">Sweep 3.0s</strong></span>
+                <span class="text-muted">Anomaly Index: <strong class="text-emerald">LOW</strong></span>
+            </div>
+        </div>
+    </div>
+
     <!-- Traffic Activity Timeline Line Chart -->
-    <div class="col-lg-8">
+    <div class="col-lg-5">
         <div class="soc-card h-100">
             <div class="soc-card-header">
                 <div class="soc-card-title">
                     <i class="bi bi-graph-up text-cyan"></i>
-                    <span>Real-Time Traffic Activity & Risk Score Timeline</span>
+                    <span>Real-Time Traffic Activity & Risk Score</span>
                 </div>
                 <div class="badge bg-dark border border-secondary text-cyan font-mono small">
                     <i class="bi bi-broadcast me-1"></i> Live Stream
                 </div>
             </div>
-            <div style="height: 300px; position: relative;">
+            <div style="height: 250px; position: relative;">
                 <canvas id="trafficTimelineChart"></canvas>
             </div>
         </div>
     </div>
 
     <!-- Threat Category Distribution Doughnut Chart -->
-    <div class="col-lg-4">
+    <div class="col-lg-3">
         <div class="soc-card h-100">
             <div class="soc-card-header">
                 <div class="soc-card-title">
@@ -105,11 +142,11 @@
                     Distribution
                 </div>
             </div>
-            <div style="height: 240px; position: relative;">
+            <div style="height: 200px; position: relative;">
                 <canvas id="threatCategoryChart"></canvas>
             </div>
             <div class="border-top border-secondary pt-2 mt-2 d-flex justify-content-between align-items-center small font-mono">
-                <span class="text-muted">Active Alerts: <strong class="text-white" id="kpiActiveAlerts">0</strong></span>
+                <span class="text-muted">Alerts: <strong class="text-white" id="kpiActiveAlerts">0</strong></span>
                 <span class="text-muted">Avg Latency: <strong class="text-amber" id="kpiAvgLatency">0 ms</strong></span>
             </div>
         </div>

@@ -190,6 +190,16 @@ function renderTrafficChart(timelineData) {
         return;
     }
 
+    const context = ctx.getContext('2d');
+    const gradientRisk = context.createLinearGradient(0, 0, 0, 240);
+    gradientRisk.addColorStop(0, 'rgba(0, 240, 255, 0.35)');
+    gradientRisk.addColorStop(0.6, 'rgba(0, 240, 255, 0.08)');
+    gradientRisk.addColorStop(1, 'rgba(0, 240, 255, 0.0)');
+
+    const gradientLatency = context.createLinearGradient(0, 0, 0, 240);
+    gradientLatency.addColorStop(0, 'rgba(255, 183, 3, 0.25)');
+    gradientLatency.addColorStop(1, 'rgba(255, 183, 3, 0.0)');
+
     Sentinel.trafficChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -199,20 +209,31 @@ function renderTrafficChart(timelineData) {
                     label: 'Risk Score (0-100)',
                     data: timelineData.risk_scores,
                     borderColor: '#00f0ff',
-                    backgroundColor: 'rgba(0, 240, 255, 0.1)',
-                    borderWidth: 2,
-                    tension: 0.35,
+                    backgroundColor: gradientRisk,
+                    borderWidth: 2.5,
+                    tension: 0.4,
                     fill: true,
+                    pointRadius: 4,
+                    pointHoverRadius: 8,
+                    pointBackgroundColor: '#00f0ff',
+                    pointBorderColor: '#050811',
+                    pointBorderWidth: 2,
                     yAxisID: 'y'
                 },
                 {
                     label: 'Latency (ms)',
                     data: timelineData.latencies,
-                    borderColor: '#f59e0b',
-                    backgroundColor: 'transparent',
-                    borderWidth: 1.5,
-                    borderDash: [4, 4],
-                    tension: 0.2,
+                    borderColor: '#ffb703',
+                    backgroundColor: gradientLatency,
+                    borderWidth: 1.8,
+                    borderDash: [5, 4],
+                    tension: 0.3,
+                    fill: true,
+                    pointRadius: 3,
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: '#ffb703',
+                    pointBorderColor: '#050811',
+                    pointBorderWidth: 2,
                     yAxisID: 'y1'
                 }
             ]
@@ -222,14 +243,17 @@ function renderTrafficChart(timelineData) {
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    labels: { color: '#94a3b8', font: { family: 'Inter', size: 11 } }
+                    labels: { color: '#94a3b8', font: { family: 'Inter', size: 11, weight: '600' } }
                 },
                 tooltip: {
-                    backgroundColor: '#111827',
+                    backgroundColor: 'rgba(8, 12, 24, 0.95)',
                     titleColor: '#00f0ff',
                     bodyColor: '#f8fafc',
-                    borderColor: '#1e293b',
-                    borderWidth: 1
+                    borderColor: 'rgba(0, 240, 255, 0.4)',
+                    borderWidth: 1.5,
+                    padding: 10,
+                    boxPadding: 4,
+                    usePointStyle: true
                 }
             },
             scales: {
@@ -242,15 +266,15 @@ function renderTrafficChart(timelineData) {
                     max: 100,
                     position: 'left',
                     grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                    ticks: { color: '#00f0ff', font: { size: 10 } },
-                    title: { display: true, text: 'Risk Score', color: '#00f0ff', font: { size: 11 } }
+                    ticks: { color: '#00f0ff', font: { size: 10, weight: '600' } },
+                    title: { display: true, text: 'Risk Score (0-100)', color: '#00f0ff', font: { size: 11, weight: '700' } }
                 },
                 y1: {
                     min: 0,
                     position: 'right',
                     grid: { drawOnChartArea: false },
-                    ticks: { color: '#f59e0b', font: { size: 10 } },
-                    title: { display: true, text: 'Latency (ms)', color: '#f59e0b', font: { size: 11 } }
+                    ticks: { color: '#ffb703', font: { size: 10, weight: '600' } },
+                    title: { display: true, text: 'Latency (ms)', color: '#ffb703', font: { size: 11, weight: '700' } }
                 }
             }
         }
@@ -261,7 +285,7 @@ function renderCategoryChart(categoryData) {
     const ctx = document.getElementById('threatCategoryChart');
     if (!ctx) return;
 
-    const colors = ['#ef4444', '#f59e0b', '#3b82f6', '#10b981', '#8b5cf6', '#ec4899'];
+    const colors = ['#ff2e63', '#ffb703', '#3b82f6', '#00f59b', '#a855f7', '#00f0ff'];
 
     if (Sentinel.categoryChart) {
         Sentinel.categoryChart.data.labels = categoryData.labels;
@@ -277,9 +301,9 @@ function renderCategoryChart(categoryData) {
             datasets: [{
                 data: categoryData.counts,
                 backgroundColor: colors.slice(0, categoryData.labels.length),
-                borderColor: '#111827',
-                borderWidth: 2,
-                hoverOffset: 6
+                borderColor: '#0a0f1d',
+                borderWidth: 3,
+                hoverOffset: 8
             }]
         },
         options: {
@@ -288,10 +312,17 @@ function renderCategoryChart(categoryData) {
             plugins: {
                 legend: {
                     position: 'bottom',
-                    labels: { color: '#94a3b8', font: { family: 'Inter', size: 11 }, padding: 12 }
+                    labels: { color: '#94a3b8', font: { family: 'Inter', size: 10, weight: '500' }, padding: 8 }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(8, 12, 24, 0.95)',
+                    titleColor: '#00f0ff',
+                    bodyColor: '#ffffff',
+                    borderColor: 'rgba(0, 240, 255, 0.4)',
+                    borderWidth: 1.5
                 }
             },
-            cutout: '65%'
+            cutout: '70%'
         }
     });
 }
