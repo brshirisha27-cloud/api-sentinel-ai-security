@@ -26,9 +26,9 @@
     &bull;
     <a href="docs/API_SENTINEL_SOC_WALKTHROUGH.pdf"><strong>📄 Download PDF Manual &raquo;</strong></a>
     &bull;
-    <a href="#-quick-start-instructions"><strong>🚀 Quick Start</strong></a>
+    <a href="docs/API_SENTINEL_PRESENTATION.pptx"><strong>📊 Download PPTX Presentation &raquo;</strong></a>
     &bull;
-    <a href="#-5-minute-college-presentation-guide"><strong>🎓 Presentation Guide</strong></a>
+    <a href="#-quick-start-instructions"><strong>🚀 Quick Start</strong></a>
   </p>
 
 </div>
